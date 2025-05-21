@@ -2,6 +2,7 @@ package render
 
 import (
 	"bwa/pkg/config"
+	"bwa/pkg/models"
 	"bytes"
 	"fmt"
 	"html/template"
@@ -18,7 +19,11 @@ func NewTemplate(a *config.AppConfig) {
 	app = a
 }
 
-func RenderTemplates(w http.ResponseWriter, t string) {
+func AddDefaultData(td *models.TemplateData) *models.TemplateData {
+	return td
+}
+
+func RenderTemplates(w http.ResponseWriter, t string, td *models.TemplateData) {
 
 	var tc map[string]*template.Template
 
@@ -40,7 +45,9 @@ func RenderTemplates(w http.ResponseWriter, t string) {
 
 	buf := new(bytes.Buffer)
 
-	_ = tmpl.Execute(buf, nil)
+	td = AddDefaultData(td)
+
+	_ = tmpl.Execute(buf, td)
 
 	_, err := buf.WriteTo(w)
 

@@ -2,6 +2,7 @@ package handlers
 
 import (
 	"bwa/pkg/config"
+	"bwa/pkg/models"
 	"bwa/pkg/render"
 	"net/http"
 )
@@ -22,9 +23,13 @@ func NewHandlers(r *Repository) {
 	Repo = r
 }
 func (m *Repository) Home(w http.ResponseWriter, r *http.Request) {
-	render.RenderTemplates(w, "home.page.html")
+	render.RenderTemplates(w, "home.page.html", &models.TemplateData{})
 }
 
 func (m *Repository) About(w http.ResponseWriter, r *http.Request) {
-	render.RenderTemplates(w, "about.page.html")
+	stringMap := map[string]string{}
+	stringMap["test"] = "Hello to About Page!"
+	render.RenderTemplates(w, "about.page.html", &models.TemplateData{
+		StringMap: stringMap,
+	})
 }
