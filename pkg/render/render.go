@@ -1,6 +1,7 @@
 package render
 
 import (
+	"bwa/pkg/config"
 	"bytes"
 	"fmt"
 	"html/template"
@@ -9,26 +10,39 @@ import (
 	"path/filepath"
 )
 
+var app *config.AppConfig
+
 var functions = template.FuncMap{}
 
+func NewTemplate(a *config.AppConfig) {
+	app = a
+}
+
 func RenderTemplates(w http.ResponseWriter, t string) {
-	templCache, err := CreateTemplateCache(w, t)
-	if err != nil {
-		fmt.Println(err)
-		return
+
+	var tc map[string]*template.Template
+
+	if app.UseCache {
+		tc = app.TemplateCache
+	} else {
+		newTemplCache, err := CreateTemplateCache()
+		if err != nil {
+			log.Fatal(err)
+		}
+		tc = newTemplCache
 	}
 
-	tmpl, ok := templCache[t]
+	tmpl, ok := tc[t]
 
 	if !ok {
-		log.Fatal(err)
+		log.Fatal("file Not found in the cache")
 	}
 
 	buf := new(bytes.Buffer)
 
 	_ = tmpl.Execute(buf, nil)
 
-	_, err = buf.WriteTo(w)
+	_, err := buf.WriteTo(w)
 
 	if err != nil {
 		fmt.Println(err)
@@ -36,7 +50,7 @@ func RenderTemplates(w http.ResponseWriter, t string) {
 
 }
 
-func CreateTemplateCache(w http.ResponseWriter, fileName string) (map[string]*template.Template, error) {
+func CreateTemplateCache() (map[string]*template.Template, error) {
 	myCache := map[string]*template.Template{}
 	pages, err := filepath.Glob("./templates/*.page.html")
 	if err != nil {
