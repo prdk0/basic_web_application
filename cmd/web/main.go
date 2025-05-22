@@ -14,22 +14,26 @@ const PORT = ":8080"
 func main() {
 
 	var app config.AppConfig
+	// create template cache from main -> render through config.app, This is doing because it will run only once instead of
+	// running multiple times if you call from render package
 	tc, err := render.CreateTemplateCache()
 	if err != nil {
 		log.Fatal(err)
 	}
 	app.TemplateCache = tc
 	app.UseCache = false
-	repo := handlers.NewRepo(&app)
 
+	// repository pattern which helps to implement interfaces
+	repo := handlers.NewRepo(&app)
 	handlers.NewHandlers(repo)
 
 	render.NewTemplate(&app)
-
-	http.HandleFunc("/", handlers.Repo.Home)
-	http.HandleFunc("/about", handlers.Repo.About)
+	srv := http.Server{
+		Addr:    PORT,
+		Handler: router(&app),
+	}
 	fmt.Printf("Sever listening to the port %s\n", PORT)
-	err = http.ListenAndServe(PORT, nil)
+	srv.ListenAndServe()
 	if err != nil {
 		fmt.Println(err)
 	}
