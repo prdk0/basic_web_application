@@ -1,8 +1,8 @@
 package main
 
 import (
-	"bwa/pkg/config"
-	"bwa/pkg/handlers"
+	"bookings/pkg/config"
+	"bookings/pkg/handlers"
 	"net/http"
 
 	"github.com/go-chi/chi/v5"

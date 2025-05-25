@@ -1,9 +1,9 @@
 package handlers
 
 import (
-	"bwa/pkg/config"
-	"bwa/pkg/models"
-	"bwa/pkg/render"
+	"bookings/pkg/config"
+	"bookings/pkg/models"
+	"bookings/pkg/render"
 	"net/http"
 )
 

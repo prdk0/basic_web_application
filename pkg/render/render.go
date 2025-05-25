@@ -1,8 +1,8 @@
 package render
 
 import (
-	"bwa/pkg/config"
-	"bwa/pkg/models"
+	"bookings/pkg/config"
+	"bookings/pkg/models"
 	"bytes"
 	"fmt"
 	"html/template"

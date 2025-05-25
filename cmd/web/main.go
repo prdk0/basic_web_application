@@ -1,9 +1,9 @@
 package main
 
 import (
-	"bwa/pkg/config"
-	"bwa/pkg/handlers"
-	"bwa/pkg/render"
+	"bookings/pkg/config"
+	"bookings/pkg/handlers"
+	"bookings/pkg/render"
 	"fmt"
 	"log"
 	"net/http"
