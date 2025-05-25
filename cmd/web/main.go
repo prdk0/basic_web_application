@@ -12,6 +12,7 @@ import (
 const PORT = ":8080"
 
 func main() {
+	mux := http.NewServeMux()
 
 	var app config.AppConfig
 	// create template cache from main -> render through config.app, This is doing because it will run only once instead of
@@ -28,13 +29,20 @@ func main() {
 	handlers.NewHandlers(repo)
 
 	render.NewTemplate(&app)
+
+	simpleHandler := MiddleWareChainTest(http.HandlerFunc(SimpleHttpTest), MiddleWaretest, MiddleWareRecoverTest, WriteToConsole) // MiddleWare Chain Example
+	mux.Handle("/simple", simpleHandler)
 	srv := http.Server{
 		Addr:    PORT,
-		Handler: router(&app),
+		Handler: mux, // default mux
 	}
 	fmt.Printf("Sever listening to the port %s\n", PORT)
 	srv.ListenAndServe()
 	if err != nil {
 		fmt.Println(err)
 	}
+}
+
+func SimpleHttpTest(w http.ResponseWriter, r *http.Request) {
+	fmt.Fprint(w, "Hello from SimpleHttpTest")
 }
