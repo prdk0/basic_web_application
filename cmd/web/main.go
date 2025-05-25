@@ -12,7 +12,7 @@ import (
 const PORT = ":8080"
 
 func main() {
-	mux := http.NewServeMux()
+	mux := http.NewServeMux() // default mux
 
 	var app config.AppConfig
 	// create template cache from main -> render through config.app, This is doing because it will run only once instead of
