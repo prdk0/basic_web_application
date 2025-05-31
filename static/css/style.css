@@ -5,4 +5,9 @@
     padding: 1em;
     color: #ffff;
     font-size: 80%;
+    overflow-x: hidden;
+  }
+
+  body {
+    overflow-x: hidden;
   }
