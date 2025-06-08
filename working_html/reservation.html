@@ -69,8 +69,7 @@
                   </div>
                 </div>
                   <button type="submit" class="btn btn-primary">Search Availability</button>
-                  <button type="button" id="notie_alert">Notie Test</button>
-                   <button type="button" id="sweet_alert">Sweet Alert Test</button>
+                  <button type="button" id="test_button">test</button>
               </form>
           </div>
         </div>
@@ -87,6 +86,7 @@
     <script src="https://unpkg.com/notie"></script>
 
     <script type="text/javascript">
+      let alertPrompt = Prompt();
       // Bootstrap Validation
         (() => {
           'use strict'
@@ -112,16 +112,13 @@
         });
         
         // Notie alert
-        function alert(type, msg) {
+        function notify(type, msg) {
           let config = {
             type:type,
             text:msg
           }
           notie.alert(config)
         }
-        document.getElementById("notie_alert").addEventListener('click', () => {
-          alert("success", "Hello Notie!");
-        })
 
         // Sweet Alert
 
@@ -133,8 +130,122 @@
               confirmButtonText: 'Cool'
             })
         }
-        document.getElementById("sweet_alert").addEventListener('click', () => {
-          notifyModal();
+        
+        // Javascript module
+        function Prompt() {
+           let toast = function(c) {
+              const {
+                msg="",
+                icon="success",
+                position="top-end",
+
+              } = c;
+              const Toast = Swal.mixin({
+              toast: true,
+              title: msg,
+              position: position,
+              icon: icon,
+              showConfirmButton: false,
+              timer: 3000,
+              timerProgressBar: true,
+              didOpen: (toast) => {
+              toast.onmouseenter = Swal.stopTimer;
+              toast.onmouseleave = Swal.resumeTimer;
+              }
+            });
+            Toast.fire({});         
+           }
+
+           let success = function(c) {
+            const {
+              msg="",
+              title="",
+              footer=""
+            } = c;
+
+            Swal.fire({
+              icon: "success",
+              title: title,
+              text: msg,
+              footer: footer
+            });
+           }
+
+           let error = function(c) {
+            const {
+              msg="",
+              title="",
+              footer=""
+            } = c;
+
+            Swal.fire({
+              icon: "error",
+              title: title,
+              text: msg,
+              footer: footer
+            });
+           }
+           // custom modal date picker
+           async function custom(c) {
+            const{
+              msg="",
+              title=""
+            } = c;
+
+              const { value: formValues } = await Swal.fire({
+                title: title,
+                html: msg,
+                backdrop: false,
+                focusConfirm: false,
+                showCancelButton: true,
+                willOpen: () => {
+                  let calElement = document.getElementById("reservation-dates-modal")
+                  const rangepicker = new DateRangePicker(calElement, {
+                    buttonClass: 'btn',
+                    format: "yyyy-mm-dd",
+                    minDate: "Date",
+                    autohide: true
+                  });
+                },
+
+                didOpen: () => {
+                    document.getElementById("start").removeAttribute('disabled'),
+                    document.getElementById("end").removeAttribute('disabled')
+                },
+
+                preConfirm: () => {
+                  return [
+                    document.getElementById("start").value,
+                    document.getElementById("end").value
+                  ];
+                }
+              });
+              if (formValues) {
+                Swal.fire(JSON.stringify(formValues));
+              }
+
+           }
+           return {
+            toast: toast,
+            success: success,
+            error: error,
+            custom:custom
+           }
+        }
+        document.getElementById("test_button").addEventListener('click', () => {
+          let html = `
+            <form id="check-availability-form" action="" method="post" novalidate class="needs-validation">
+              <div class="row" id="reservation-dates-modal">
+                <div class="col">
+                    <input required class="form-control" type="text" name="start" id="start" placeholder="arrival" disabled>
+                  </div>
+                  <div class="col">
+                    <input required class="form-control" type="text" name="end" id="end" placeholder="departure" disabled>
+                  </div>
+              </div>
+            </form>
+          `;
+            alertPrompt.custom({msg:html, title:"choose your dates."})
         })
     </script>
 </body>

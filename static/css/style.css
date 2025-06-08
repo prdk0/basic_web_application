@@ -33,3 +33,8 @@ body {
 .room-image {
   max-width: 50%;
 }
+
+/* button index was 1 turned to zero to date picker to appear over the modal */
+.swal2-actions{ 
+  z-index: 0 !important; 
+}
