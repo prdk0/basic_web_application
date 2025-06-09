@@ -1,0 +1,48 @@
+{{template "base" .}}
+
+{{define "title"}}
+    <title>General's Page</title>
+{{end}}
+
+{{define "content"}}
+    <!-- container -->
+    <div class="container" style="margin-top: 60px;">
+        <div class="row">
+            <div class="col">
+                <img src="/static/images/generals-quarters.png" alt="generals quaters" class="img-fluid img-thumbnail room-image mx-auto d-block">
+            </div>
+        </div>
+        <div class="row">
+            <div class="col">
+              <h1 class="text-center">Generals Quaters</h1>
+              <p>Your home away from home, set on the majestic water of the Atlantic ocean. This will be a vaccation to remember.Your home away from home, set on the majestic water of the Atlantic ocean. This will be a vaccation to remember.Your home away from home, set on the majestic water of the Atlantic ocean. This will be a vaccation to remember.Your home away from home, set on the majestic water of the Atlantic ocean. This will be a vaccation to remember.Your home away from home, set on the majestic water of the Atlantic ocean. This will be a vaccation to remember.Your home away from home, set on the majestic water of the Atlantic ocean. This will be a vaccation to remember.
+              </p>
+            </div>
+        </div>
+        <div class="row">
+          <div class="col text-center">
+            <a href="#!" class="btn btn-success" id="check-availability-button">Check Availability</a>
+          </div>
+        </div>
+    </div>
+{{end}}
+
+{{define "js"}}
+    <script type="text/javascript">
+        document.getElementById("check-availability-button").addEventListener('click', () => {
+                let html = `
+                    <form id="check-availability-form" action="" method="post" novalidate class="needs-validation">
+                    <div class="row" id="date_picker">
+                        <div class="col">
+                            <input required class="form-control" type="text" name="start" id="start" placeholder="arrival" disabled>
+                        </div>
+                        <div class="col">
+                            <input required class="form-control" type="text" name="end" id="end" placeholder="departure" disabled>
+                        </div>
+                    </div>
+                    </form>
+                `;
+                    alertPrompt.custom({msg:html, title:"choose your dates."})
+                    });
+        </script>
+{{end}}

@@ -25,7 +25,7 @@ func NewHandlers(r *Repository) {
 func (m *Repository) Home(w http.ResponseWriter, r *http.Request) {
 	remoteIP := r.RemoteAddr
 	m.App.Session.Put(r.Context(), "remoteip", remoteIP)
-	render.RenderTemplates(w, "home.page.html", &models.TemplateData{})
+	render.RenderTemplates(w, "home.page.tmpl", &models.TemplateData{})
 }
 
 func (m *Repository) About(w http.ResponseWriter, r *http.Request) {
@@ -33,7 +33,27 @@ func (m *Repository) About(w http.ResponseWriter, r *http.Request) {
 	// stringMap["test"] = "Hello to About Page!"
 	remoteIP := m.App.Session.GetString(r.Context(), "remoteip")
 	stringMap["remote_ip"] = remoteIP
-	render.RenderTemplates(w, "about.page.html", &models.TemplateData{
+	render.RenderTemplates(w, "about.page.tmpl", &models.TemplateData{
 		StringMap: stringMap,
 	})
+}
+
+func (m *Repository) Contact(w http.ResponseWriter, r *http.Request) {
+	render.RenderTemplates(w, "contact.page.tmpl", &models.TemplateData{})
+}
+
+func (m *Repository) Generals(w http.ResponseWriter, r *http.Request) {
+	render.RenderTemplates(w, "generals.page.tmpl", &models.TemplateData{})
+}
+
+func (m *Repository) Majors(w http.ResponseWriter, r *http.Request) {
+	render.RenderTemplates(w, "majors.page.tmpl", &models.TemplateData{})
+}
+
+func (m *Repository) SearchAvailability(w http.ResponseWriter, r *http.Request) {
+	render.RenderTemplates(w, "search-availability.page.tmpl", &models.TemplateData{})
+}
+
+func (m *Repository) Reservation(w http.ResponseWriter, r *http.Request) {
+	render.RenderTemplates(w, "make-reservation.page.tmpl", &models.TemplateData{})
 }
