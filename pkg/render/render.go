@@ -9,6 +9,8 @@ import (
 	"log"
 	"net/http"
 	"path/filepath"
+
+	"github.com/justinas/nosurf"
 )
 
 var app *config.AppConfig
@@ -19,11 +21,12 @@ func NewTemplate(a *config.AppConfig) {
 	app = a
 }
 
-func AddDefaultData(td *models.TemplateData) *models.TemplateData {
+func AddDefaultData(td *models.TemplateData, r *http.Request) *models.TemplateData {
+	td.CSRFToken = nosurf.Token(r)
 	return td
 }
 
-func RenderTemplates(w http.ResponseWriter, t string, td *models.TemplateData) {
+func RenderTemplates(w http.ResponseWriter, r *http.Request, t string, td *models.TemplateData) {
 
 	var tc map[string]*template.Template
 
@@ -45,7 +48,7 @@ func RenderTemplates(w http.ResponseWriter, t string, td *models.TemplateData) {
 
 	buf := new(bytes.Buffer)
 
-	td = AddDefaultData(td)
+	td = AddDefaultData(td, r)
 
 	_ = tmpl.Execute(buf, td)
 

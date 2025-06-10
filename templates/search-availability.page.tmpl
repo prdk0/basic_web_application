@@ -10,7 +10,8 @@
         <div class="row justify-content-center">
           <div class="col-md-6 col-sm-6">
             <h1>Search Availability</h1>
-              <form action="" method="get" class="needs-validation" novalidate>
+              <form action="/search-availability" method="post" class="needs-validation" novalidate>
+                <input type="hidden" name="csrf_token" value="{{ .CSRFToken }}">
                 <div id="date_picker">
                   <div class="row">
                       <div class="col">
