@@ -4,7 +4,9 @@ import (
 	"bookings/pkg/config"
 	"bookings/pkg/models"
 	"bookings/pkg/render"
+	"encoding/json"
 	"fmt"
+	"log"
 	"net/http"
 )
 
@@ -51,6 +53,8 @@ func (m *Repository) Majors(w http.ResponseWriter, r *http.Request) {
 	render.RenderTemplates(w, r, "majors.page.tmpl", &models.TemplateData{})
 }
 
+// Search Availability
+
 func (m *Repository) SearchAvailability(w http.ResponseWriter, r *http.Request) {
 	render.RenderTemplates(w, r, "search-availability.page.tmpl", &models.TemplateData{})
 }
@@ -62,6 +66,26 @@ func (m *Repository) PostSearchAvailability(w http.ResponseWriter, r *http.Reque
 	dateData := fmt.Sprintf("start date is %s and end date is %s", start, end)
 	w.Write([]byte(dateData))
 }
+
+type JsonResponse struct {
+	Ok      bool   `json:"ok"`
+	Message string `json:"message"`
+}
+
+func (m *Repository) AvailabilityJSON(w http.ResponseWriter, r *http.Request) {
+	resp := JsonResponse{
+		Ok:      true,
+		Message: "Hello from Json Response",
+	}
+	msg, err := json.MarshalIndent(resp, "", "    ")
+	if err != nil {
+		log.Println(err)
+	}
+	w.Header().Set("Content-Type", "application/json")
+	w.Write(msg)
+}
+
+// Reservation
 
 func (m *Repository) Reservation(w http.ResponseWriter, r *http.Request) {
 	render.RenderTemplates(w, r, "make-reservation.page.tmpl", &models.TemplateData{})

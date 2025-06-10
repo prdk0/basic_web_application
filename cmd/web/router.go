@@ -24,6 +24,7 @@ func router(app *config.AppConfig) http.Handler {
 	//Search Availability
 	mux.Get("/seach-availability", handlers.Repo.SearchAvailability)
 	mux.Post("/search-availability", handlers.Repo.PostSearchAvailability)
+	mux.Get("/search-availability-json", handlers.Repo.AvailabilityJSON)
 
 	mux.Get("/make-reservation", handlers.Repo.Reservation)
 	staticFileServer := http.FileServer(http.Dir("./static/"))
