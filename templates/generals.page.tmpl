@@ -42,7 +42,17 @@
                     </div>
                     </form>
                 `;
-                    alertPrompt.custom({msg:html, title:"choose your dates."})
+                    alertPrompt.custom({
+                    msg:html, 
+                    title:"choose your dates.",
+                    callback: function(result) {
+                        fetch("/search-availability-json")
+                            .then(response => response.json())
+                            .then(data => {
+                                console.log(data.ok, data.message);
+                            })
+                    }
+                    })
                     });
         </script>
 {{end}}
