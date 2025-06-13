@@ -1,8 +1,8 @@
 package render
 
 import (
-	"bookings/pkg/config"
-	"bookings/pkg/models"
+	"bookings/internals/config"
+	"bookings/internals/models"
 	"bytes"
 	"fmt"
 	"html/template"

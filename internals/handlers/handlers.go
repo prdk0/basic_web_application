@@ -1,9 +1,9 @@
 package handlers
 
 import (
-	"bookings/pkg/config"
-	"bookings/pkg/models"
-	"bookings/pkg/render"
+	"bookings/internals/config"
+	"bookings/internals/models"
+	"bookings/internals/render"
 	"encoding/json"
 	"fmt"
 	"log"
