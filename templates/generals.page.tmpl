@@ -31,13 +31,13 @@
     <script type="text/javascript">
         document.getElementById("check-availability-button").addEventListener('click', () => {
                 let html = `
-                    <form id="check-availability-form" action="" method="post" novalidate class="needs-validation">
+                    <form id="check-availability-form" action="" method="post" class="needs-validation" novalidate>
                     <div class="row" id="date_picker">
                         <div class="col">
-                            <input required class="form-control" type="text" name="start" id="start" placeholder="arrival" disabled>
+                            <input required class="form-control" type="text" name="start" id="start" placeholder="arrival" required disabled>
                         </div>
                         <div class="col">
-                            <input required class="form-control" type="text" name="end" id="end" placeholder="departure" disabled>
+                            <input required class="form-control" type="text" name="end" id="end" placeholder="departure"  required disabled>
                         </div>
                     </div>
                     </form>
@@ -45,8 +45,27 @@
                     alertPrompt.custom({
                     msg:html, 
                     title:"choose your dates.",
+                    willOpen: () => {
+                        let calElement = document.getElementById("date_picker")
+                        const rangepicker = new DateRangePicker(calElement, {
+                            buttonClass: 'btn',
+                            format: "yyyy-mm-dd",
+                            minDate: "Date",
+                            autohide: true
+                        });
+                        },
+                    didOpen: () => {
+                        document.getElementById("start").removeAttribute('disabled'),
+                        document.getElementById("end").removeAttribute('disabled')
+                    },
                     callback: function(result) {
-                        fetch("/search-availability-json")
+                    let form = document.getElementById("check-availability-form");
+                    let formData = new FormData(form);
+                    formData.append("csrf_token", {{.CSRFToken}})
+                        fetch("/search-availability-json", {
+                            method: "post",
+                            body:formData
+                        })
                             .then(response => response.json())
                             .then(data => {
                                 console.log(data.ok, data.message);
