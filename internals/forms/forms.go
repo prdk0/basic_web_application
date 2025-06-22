@@ -4,6 +4,7 @@ import (
 	"fmt"
 	"net/http"
 	"net/url"
+	"regexp"
 	"strings"
 )
 
@@ -41,6 +42,17 @@ func (f *Form) MinLength(field string, length int) bool {
 	x := f.Get(field)
 	if len(x) < length {
 		f.Errors.Add(field, fmt.Sprintf("This field must be at least %d characters long", length))
+		return false
+	}
+	return true
+}
+
+func (f *Form) IsValidEmail(field string) bool {
+	email := f.Get(field)
+	emailRegex := `^[\w\+\.-]+@[a-zA-Z\d\.-]+\.[a-zA-Z]{2,}$`
+	rs := regexp.MustCompile(emailRegex)
+	if !rs.MatchString(email) {
+		f.Errors.Add(field, "Enter a valid email")
 		return false
 	}
 	return true
