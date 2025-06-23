@@ -78,7 +78,7 @@
                 })() 
                 
                 // Notie alert
-                function notify(type, msg) {
+                function notify(msg, type) {
                 let config = {
                     type:type,
                     text:msg
@@ -96,6 +96,18 @@
                     confirmButtonText: 'Cool'
                     })
                 }
+
+                {{with .Error}}
+                    notify("{{.}}", "error")
+                {{end}}
+
+                {{with .Flash}}
+                    notify("{{.}}", "success")
+                {{end}}
+
+                {{with .Warning}}
+                    notify("{{.}}", "warning")
+                {{end}}
                 
                 // Javascript module
                 function Prompt() {

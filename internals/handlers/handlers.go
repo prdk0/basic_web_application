@@ -31,7 +31,7 @@ func NewHandlers(r *Repository) {
 func (m *Repository) Home(w http.ResponseWriter, r *http.Request) {
 	remoteIP := r.RemoteAddr
 	m.App.Session.Put(r.Context(), "remoteip", remoteIP)
-	render.RenderTemplates(w, r, "home.page.tmpl", &models.TemplateData{})
+	render.RenderTemplates(w, r, "home.page.tmpl", &templateData{})
 }
 
 func (m *Repository) About(w http.ResponseWriter, r *http.Request) {
@@ -39,27 +39,27 @@ func (m *Repository) About(w http.ResponseWriter, r *http.Request) {
 	// stringMap["test"] = "Hello to About Page!"
 	remoteIP := m.App.Session.GetString(r.Context(), "remoteip")
 	stringMap["remote_ip"] = remoteIP
-	render.RenderTemplates(w, r, "about.page.tmpl", &models.TemplateData{
+	render.RenderTemplates(w, r, "about.page.tmpl", &templateData{
 		StringMap: stringMap,
 	})
 }
 
 func (m *Repository) Contact(w http.ResponseWriter, r *http.Request) {
-	render.RenderTemplates(w, r, "contact.page.tmpl", &models.TemplateData{})
+	render.RenderTemplates(w, r, "contact.page.tmpl", &templateData{})
 }
 
 func (m *Repository) Generals(w http.ResponseWriter, r *http.Request) {
-	render.RenderTemplates(w, r, "generals.page.tmpl", &models.TemplateData{})
+	render.RenderTemplates(w, r, "generals.page.tmpl", &templateData{})
 }
 
 func (m *Repository) Majors(w http.ResponseWriter, r *http.Request) {
-	render.RenderTemplates(w, r, "majors.page.tmpl", &models.TemplateData{})
+	render.RenderTemplates(w, r, "majors.page.tmpl", &templateData{})
 }
 
 // Search Availability
 
 func (m *Repository) SearchAvailability(w http.ResponseWriter, r *http.Request) {
-	render.RenderTemplates(w, r, "search-availability.page.tmpl", &models.TemplateData{})
+	render.RenderTemplates(w, r, "search-availability.page.tmpl", &templateData{})
 }
 
 func (m *Repository) PostSearchAvailability(w http.ResponseWriter, r *http.Request) {
@@ -94,7 +94,7 @@ func (m *Repository) Reservation(w http.ResponseWriter, r *http.Request) {
 	var emptyReservation models.Reservation
 	data := make(map[string]any)
 	data["reservation"] = emptyReservation
-	render.RenderTemplates(w, r, "make-reservation.page.tmpl", &models.TemplateData{
+	render.RenderTemplates(w, r, "make-reservation.page.tmpl", &templateData{
 		Form: forms.New(nil),
 		Data: data,
 	})
@@ -123,7 +123,7 @@ func (m *Repository) PostReservation(w http.ResponseWriter, r *http.Request) {
 	if !form.Valid() {
 		data := make(map[string]any)
 		data["reservation"] = reservation
-		render.RenderTemplates(w, r, "make-reservation.page.tmpl", &models.TemplateData{
+		render.RenderTemplates(w, r, "make-reservation.page.tmpl", &templateData{
 			Form: form,
 			Data: data,
 		})
@@ -138,8 +138,11 @@ func (m *Repository) ReservationSummary(w http.ResponseWriter, r *http.Request) 
 	reservation, ok := m.App.Session.Get(r.Context(), "reservation").(models.Reservation)
 	if !ok {
 		log.Println("cannot get item from the session")
+		m.App.Session.Put(r.Context(), "error", "Can't get reservation from session")
+		http.Redirect(w, r, "/", http.StatusTemporaryRedirect)
 		return
 	}
+	m.App.Session.Remove(r.Context(), "reservation")
 	data := make(map[string]any)
 	data["reservation"] = reservation
 	render.RenderTemplates(w, r, "reservation-summary.page.tmpl", &templateData{
