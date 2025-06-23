@@ -3,7 +3,9 @@ package main
 import (
 	"bookings/internals/config"
 	"bookings/internals/handlers"
+	"bookings/internals/models"
 	"bookings/internals/render"
+	"encoding/gob"
 	"fmt"
 	"log"
 	"net/http"
@@ -18,6 +20,8 @@ var app config.AppConfig // make variable app to global so that it availbles to 
 var session *scs.SessionManager
 
 func main() {
+
+	gob.Register(models.Reservation{})
 
 	// setting app enviroment
 	app.InProduction = false
