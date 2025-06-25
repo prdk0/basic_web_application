@@ -6,6 +6,7 @@ import (
 	"bookings/internals/models"
 	"bookings/internals/render"
 	"encoding/gob"
+	"errors"
 	"fmt"
 	"log"
 	"net/http"
@@ -21,6 +22,23 @@ var session *scs.SessionManager
 
 func main() {
 
+	err := run()
+
+	if err != nil {
+		log.Fatal(err)
+	}
+	srv := http.Server{
+		Addr:    PORT,
+		Handler: router(&app),
+	}
+	fmt.Printf("Sever listening to the port %s\n", PORT)
+	srv.ListenAndServe()
+	if err != nil {
+		fmt.Println(err)
+	}
+}
+
+func run() error {
 	gob.Register(models.Reservation{})
 
 	// setting app enviroment
@@ -39,7 +57,7 @@ func main() {
 	// running multiple times if you call from render package
 	tc, err := render.CreateTemplateCache()
 	if err != nil {
-		log.Fatal(err)
+		return errors.New("CreateTemplateCache failed")
 	}
 	app.TemplateCache = tc
 	app.UseCache = false
@@ -47,15 +65,6 @@ func main() {
 	// repository pattern which helps to implement interfaces
 	repo := handlers.NewRepo(&app)
 	handlers.NewHandlers(repo)
-
 	render.NewTemplate(&app)
-	srv := http.Server{
-		Addr:    PORT,
-		Handler: router(&app),
-	}
-	fmt.Printf("Sever listening to the port %s\n", PORT)
-	srv.ListenAndServe()
-	if err != nil {
-		fmt.Println(err)
-	}
+	return nil
 }
