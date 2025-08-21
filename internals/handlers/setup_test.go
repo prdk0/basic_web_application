@@ -57,7 +57,7 @@ func getroutes() http.Handler {
 	mux := chi.NewRouter()
 	mux.Use(middleware.Logger)
 	mux.Use(middleware.Recoverer)
-	mux.Use(NoSurf)
+	// mux.Use(NoSurf)
 	mux.Use(SessionLoad)
 	mux.Get("/", Repo.Home)
 	mux.Get("/about", Repo.About)
