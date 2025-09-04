@@ -17,7 +17,7 @@ import (
 
 const PORT = ":8080"
 
-var app config.AppConfig // make variable app to global so that it availbles to all in main packages
+var app config.AppConfig // make variable app to global so that it available to all in main packages
 var session *scs.SessionManager
 
 func main() {

@@ -4,6 +4,7 @@ import (
 	"bookings/internals/config"
 	"bookings/internals/models"
 	"bytes"
+	"errors"
 	"fmt"
 	"html/template"
 	"log"
@@ -33,7 +34,7 @@ func AddDefaultData(td *models.TemplateData, r *http.Request) *models.TemplateDa
 	return td
 }
 
-func RenderTemplates(w http.ResponseWriter, r *http.Request, t string, td *models.TemplateData) {
+func RenderTemplates(w http.ResponseWriter, r *http.Request, t string, td *models.TemplateData) error {
 
 	var tc map[string]*template.Template
 
@@ -50,7 +51,8 @@ func RenderTemplates(w http.ResponseWriter, r *http.Request, t string, td *model
 	tmpl, ok := tc[t]
 
 	if !ok {
-		log.Fatal("file Not found in the cache")
+		// log.Fatal("file Not found in the cache")
+		return errors.New("file Not found in the cache")
 	}
 
 	buf := new(bytes.Buffer)
@@ -64,7 +66,7 @@ func RenderTemplates(w http.ResponseWriter, r *http.Request, t string, td *model
 	if err != nil {
 		fmt.Println(err)
 	}
-
+	return nil
 }
 
 func CreateTemplateCache() (map[string]*template.Template, error) {

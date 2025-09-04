@@ -149,3 +149,12 @@ func (m *Repository) ReservationSummary(w http.ResponseWriter, r *http.Request) 
 		Data: data,
 	})
 }
+
+func (m *Repository) PageNotFound(w http.ResponseWriter, r *http.Request) {
+	err := render.RenderTemplates(w, r, "404.page.tmpl", &models.TemplateData{})
+	if err != nil {
+		log.Fatal(err)
+		http.Error(w, err.Error(), http.StatusInternalServerError)
+		return
+	}
+}
