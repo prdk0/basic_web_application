@@ -26,6 +26,7 @@ var theTests = []struct {
 	{"majors", "/majors-suite", "GET", []postData{}, http.StatusOK},
 	{"search availability", "/seach-availability", "GET", []postData{}, http.StatusOK},
 	{"make reservation", "/make-reservation", "GET", []postData{}, http.StatusOK},
+	{"404 page", "/error_page", "GET", []postData{}, http.StatusNotFound},
 	{"post search availability", "/search-availability", "POST", []postData{
 		{key: "start", value: "2025-08-21"},
 		{key: "end", value: "2025-08-23"},
