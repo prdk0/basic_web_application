@@ -7,7 +7,6 @@ import (
 	"errors"
 	"fmt"
 	"html/template"
-	"log"
 	"net/http"
 	"path/filepath"
 
@@ -43,7 +42,7 @@ func RenderTemplates(w http.ResponseWriter, r *http.Request, t string, td *model
 	} else {
 		newTemplCache, err := CreateTemplateCache()
 		if err != nil {
-			log.Fatal(err)
+			return err
 		}
 		tc = newTemplCache
 	}
@@ -64,7 +63,7 @@ func RenderTemplates(w http.ResponseWriter, r *http.Request, t string, td *model
 	_, err := buf.WriteTo(w)
 
 	if err != nil {
-		fmt.Println(err)
+		return err
 	}
 	return nil
 }

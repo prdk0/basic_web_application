@@ -9,6 +9,7 @@ import (
 	"html/template"
 	"log"
 	"net/http"
+	"os"
 	"path/filepath"
 	"time"
 
@@ -25,11 +26,20 @@ var functions = template.FuncMap{}
 var app config.AppConfig // make variable app to global so that it availbles to all in main packages
 var session *scs.SessionManager
 
+var infoLog *log.Logger
+var errorLog *log.Logger
+
 func getroutes() http.Handler {
 	gob.Register(models.Reservation{})
 
 	// setting app enviroment
 	app.InProduction = false
+
+	infoLog = log.New(os.Stdout, "INFO\t", log.Ldate|log.Ltime)
+	app.InfoLog = infoLog
+
+	errorLog = log.New(os.Stdout, "ERROR\t", log.Ldate|log.Ltime|log.Lshortfile)
+	app.ErrorLog = errorLog
 
 	// Session settings
 	session = scs.New()
