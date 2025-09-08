@@ -3,6 +3,7 @@ package main
 import (
 	"bookings/internals/config"
 	"bookings/internals/handlers"
+	"bookings/internals/helpers"
 	"bookings/internals/models"
 	"bookings/internals/render"
 	"encoding/gob"
@@ -10,6 +11,7 @@ import (
 	"fmt"
 	"log"
 	"net/http"
+	"os"
 	"time"
 
 	"github.com/alexedwards/scs/v2"
@@ -19,6 +21,8 @@ const PORT = ":8080"
 
 var app config.AppConfig // make variable app to global so that it available to all in main packages
 var session *scs.SessionManager
+var infoLog *log.Logger
+var errorLog *log.Logger
 
 func main() {
 
@@ -44,6 +48,14 @@ func run() error {
 	// setting app enviroment
 	app.InProduction = false
 
+	//logger
+
+	infoLog = log.New(os.Stdout, "INFO\t", log.Ldate|log.Ltime)
+	app.InfoLog = infoLog
+
+	errorLog = log.New(os.Stdout, "ERROR\t", log.Ldate|log.Ltime|log.Lshortfile)
+	app.ErrorLog = errorLog
+
 	// Session settings
 	session = scs.New()
 	session.Lifetime = 24 * time.Hour
@@ -66,5 +78,6 @@ func run() error {
 	repo := handlers.NewRepo(&app)
 	handlers.NewHandlers(repo)
 	render.NewTemplate(&app)
+	helpers.NewHelpers(&app)
 	return nil
 }
