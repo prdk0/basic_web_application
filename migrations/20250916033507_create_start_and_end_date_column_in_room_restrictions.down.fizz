@@ -1,0 +1,2 @@
+drop_column("room_restrictions", "start_date")
+drop_column("room_restrictions", "end_date")

@@ -1,0 +1,2 @@
+add_column("room_restrictions", "start_date", "date", {})
+add_column("room_restrictions", "end_date", "date", {})

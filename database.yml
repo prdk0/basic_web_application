@@ -1,0 +1,8 @@
+---
+development:
+  dialect: postgres
+  database: bookings
+  user: pradeek
+  password: Deepakr_123
+  host: 127.0.0.1
+  pool: 5
