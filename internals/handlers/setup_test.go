@@ -67,7 +67,7 @@ func getroutes() http.Handler {
 	// repository pattern which helps to implement interfaces
 	repo := NewRepo(&app, db)
 	NewHandlers(repo)
-	render.NewTemplate(&app)
+	render.NewRenderer(&app)
 
 	mux := chi.NewRouter()
 	mux.Use(middleware.Logger)

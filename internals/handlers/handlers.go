@@ -35,29 +35,29 @@ func NewHandlers(r *Repository) {
 	Repo = r
 }
 func (m *Repository) Home(w http.ResponseWriter, r *http.Request) {
-	render.RenderTemplates(w, r, "home.page.tmpl", &templateData{})
+	render.Template(w, r, "home.page.tmpl", &templateData{})
 }
 
 func (m *Repository) About(w http.ResponseWriter, r *http.Request) {
-	render.RenderTemplates(w, r, "about.page.tmpl", &templateData{})
+	render.Template(w, r, "about.page.tmpl", &templateData{})
 }
 
 func (m *Repository) Contact(w http.ResponseWriter, r *http.Request) {
-	render.RenderTemplates(w, r, "contact.page.tmpl", &templateData{})
+	render.Template(w, r, "contact.page.tmpl", &templateData{})
 }
 
 func (m *Repository) Generals(w http.ResponseWriter, r *http.Request) {
-	render.RenderTemplates(w, r, "generals.page.tmpl", &templateData{})
+	render.Template(w, r, "generals.page.tmpl", &templateData{})
 }
 
 func (m *Repository) Majors(w http.ResponseWriter, r *http.Request) {
-	render.RenderTemplates(w, r, "majors.page.tmpl", &templateData{})
+	render.Template(w, r, "majors.page.tmpl", &templateData{})
 }
 
 // Search Availability
 
 func (m *Repository) SearchAvailability(w http.ResponseWriter, r *http.Request) {
-	render.RenderTemplates(w, r, "search-availability.page.tmpl", &templateData{})
+	render.Template(w, r, "search-availability.page.tmpl", &templateData{})
 }
 
 func (m *Repository) PostSearchAvailability(w http.ResponseWriter, r *http.Request) {
@@ -93,7 +93,7 @@ func (m *Repository) Reservation(w http.ResponseWriter, r *http.Request) {
 	var emptyReservation models.Reservation
 	data := make(map[string]any)
 	data["reservation"] = emptyReservation
-	render.RenderTemplates(w, r, "make-reservation.page.tmpl", &templateData{
+	render.Template(w, r, "make-reservation.page.tmpl", &templateData{
 		Form: forms.New(nil),
 		Data: data,
 	})
@@ -122,7 +122,7 @@ func (m *Repository) PostReservation(w http.ResponseWriter, r *http.Request) {
 	if !form.Valid() {
 		data := make(map[string]any)
 		data["reservation"] = reservation
-		render.RenderTemplates(w, r, "make-reservation.page.tmpl", &templateData{
+		render.Template(w, r, "make-reservation.page.tmpl", &templateData{
 			Form: form,
 			Data: data,
 		})
@@ -144,13 +144,13 @@ func (m *Repository) ReservationSummary(w http.ResponseWriter, r *http.Request) 
 	m.App.Session.Remove(r.Context(), "reservation")
 	data := make(map[string]any)
 	data["reservation"] = reservation
-	render.RenderTemplates(w, r, "reservation-summary.page.tmpl", &templateData{
+	render.Template(w, r, "reservation-summary.page.tmpl", &templateData{
 		Data: data,
 	})
 }
 
 func (m *Repository) PageNotFound(w http.ResponseWriter, r *http.Request) {
-	err := render.RenderTemplates(w, r, "404.page.tmpl", &models.TemplateData{})
+	err := render.Template(w, r, "404.page.tmpl", &models.TemplateData{})
 	if err != nil {
 		log.Fatal(err)
 		http.Error(w, err.Error(), http.StatusInternalServerError)
