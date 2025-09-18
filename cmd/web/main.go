@@ -2,6 +2,7 @@ package main
 
 import (
 	"bookings/internals/config"
+	"bookings/internals/driver"
 	"bookings/internals/handlers"
 	"bookings/internals/helpers"
 	"bookings/internals/models"
@@ -26,11 +27,14 @@ var errorLog *log.Logger
 
 func main() {
 
-	err := run()
+	db, err := run()
 
 	if err != nil {
 		log.Fatal(err)
 	}
+
+	defer db.SQL.Close()
+
 	srv := http.Server{
 		Addr:    PORT,
 		Handler: router(&app),
@@ -42,7 +46,7 @@ func main() {
 	}
 }
 
-func run() error {
+func run() (*driver.DB, error) {
 	gob.Register(models.Reservation{})
 
 	// setting app enviroment
@@ -65,19 +69,26 @@ func run() error {
 
 	app.Session = session
 
+	// connect to database
+	log.Println("connecting to database...")
+	db, err := driver.ConnectSQL("host=localhost port=5432 dbname=bookings user=pradeek password=Deepakr_123")
+	if err != nil {
+		log.Fatal("cannot connect to database")
+	}
+
 	// create template cache from main -> render through config.app, This is doing because it will run only once instead of
 	// running multiple times if you call from render package
 	tc, err := render.CreateTemplateCache()
 	if err != nil {
-		return errors.New("CreateTemplateCache failed")
+		return nil, errors.New("CreateTemplateCache failed")
 	}
 	app.TemplateCache = tc
 	app.UseCache = false
 
 	// repository pattern which helps to implement interfaces
-	repo := handlers.NewRepo(&app)
+	repo := handlers.NewRepo(&app, db)
 	handlers.NewHandlers(repo)
 	render.NewTemplate(&app)
 	helpers.NewHelpers(&app)
-	return nil
+	return db, nil
 }

@@ -2,10 +2,13 @@ package handlers
 
 import (
 	"bookings/internals/config"
+	"bookings/internals/driver"
 	"bookings/internals/forms"
 	"bookings/internals/helpers"
 	"bookings/internals/models"
 	"bookings/internals/render"
+	"bookings/internals/repository"
+	"bookings/internals/repository/dbrepo"
 	"encoding/json"
 	"fmt"
 	"log"
@@ -16,13 +19,15 @@ var Repo *Repository
 
 type Repository struct {
 	App *config.AppConfig
+	DB  repository.DatabaseRepo
 }
 
 type templateData = models.TemplateData
 
-func NewRepo(a *config.AppConfig) *Repository {
+func NewRepo(a *config.AppConfig, db *driver.DB) *Repository {
 	return &Repository{
 		App: a,
+		DB:  dbrepo.NewPostgresRepo(db.SQL, a),
 	}
 }
 
