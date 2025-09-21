@@ -2,7 +2,7 @@
 -- PostgreSQL database dump
 --
 
-\restrict TQFh1GBeocNZA0OoUdk58aUG1BUh455jUVOYdKeJef386LB7gcTPxYunpsB9qqm
+\restrict 6Eg2gWix8OFmU1oiCMpq293KdEUqnPxet0ePsez0roVQCw9488RBzdKmKkXdgMe
 
 -- Dumped from database version 17.6
 -- Dumped by pg_dump version 17.6
@@ -108,7 +108,7 @@ ALTER SEQUENCE public.restrictions_id_seq OWNED BY public.restrictions.id;
 CREATE TABLE public.room_restrictions (
     id integer NOT NULL,
     room_id integer NOT NULL,
-    reservation_id integer NOT NULL,
+    reservation_id integer,
     restriction_id integer NOT NULL,
     created_at timestamp without time zone NOT NULL,
     updated_at timestamp without time zone NOT NULL,
@@ -396,5 +396,5 @@ ALTER TABLE ONLY public.room_restrictions
 -- PostgreSQL database dump complete
 --
 
-\unrestrict TQFh1GBeocNZA0OoUdk58aUG1BUh455jUVOYdKeJef386LB7gcTPxYunpsB9qqm
+\unrestrict 6Eg2gWix8OFmU1oiCMpq293KdEUqnPxet0ePsez0roVQCw9488RBzdKmKkXdgMe
 
