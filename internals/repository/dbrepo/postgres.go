@@ -50,7 +50,7 @@ func (m *postgreDbRepo) SearchAvailabilityByDatesByRoomId(start, end time.Time, 
 	return false, nil
 }
 
-func (m *postgreDbRepo) SearchAvailabilityForAllrooms(start, end time.Time, roomId int) ([]models.Room, error) {
+func (m *postgreDbRepo) SearchAvailabilityForAllrooms(start, end time.Time) ([]models.Room, error) {
 	ctx, cancel := context.WithTimeout(context.Background(), 3*time.Second)
 	defer cancel()
 	var rooms []models.Room

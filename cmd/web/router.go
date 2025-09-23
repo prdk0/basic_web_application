@@ -22,7 +22,7 @@ func router(app *config.AppConfig) http.Handler {
 	mux.Get("/majors-suite", handlers.Repo.Majors)
 
 	//Search Availability
-	mux.Get("/seach-availability", handlers.Repo.SearchAvailability)
+	mux.Get("/search-availability", handlers.Repo.SearchAvailability)
 	mux.Post("/search-availability", handlers.Repo.PostSearchAvailability)
 	mux.Post("/search-availability-json", handlers.Repo.AvailabilityJSON)
 
