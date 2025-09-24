@@ -9,10 +9,20 @@
     <div class="container" style="margin-top: 60px;">
         <div class="row">
             <div class="col">
-                <h1>Make Reservation</h1>
                 {{$res := index .Data "reservation"}}
+                <h1>Make Reservation</h1>
+                <p>
+                    Room: {{$res.Room.RoomName}} <br>
+                    Arrival: {{index .StringMap "start_date"}} <br>
+                    Departure: {{index .StringMap "end_date"}}
+                </p>
                 <form method="post" action="" class="" novalidate>
+                
                     <input type="hidden" name="csrf_token" value="{{ .CSRFToken }}">
+                    <input type="hidden" name="start_date" value="{{index .StringMap "start_date"}}"/>
+                    <input type="hidden" name="end_date" value="{{index .StringMap "end_date"}}"/>
+                    <input type="hidden" name="room_id" value="{{$res.RoomID}}"/>
+
                     <div class="mb-3">
                         <label for="first_name" class="form-label">First Name</label>
                         {{with .Form.Errors.Get "first_name"}}
@@ -42,8 +52,6 @@
                         <input type="text" name="phone" value="{{$res.Phone}}" class="form-control {{with .Form.Errors.Get "phone"}}is-invalid{{end}}" id="phone" autocomplete="new-password" required>
                     </div>
                     <input type="hidden" name="room_id" value="5"/>
-                    <input type="hidden" name="start_date" value="2025-09-26"/>
-                    <input type="hidden" name="end_date" value="2025-09-28"/>
                     <button type="submit" class="btn btn-primary">Make Reservation</button>
                 </form>
             </div>
