@@ -152,6 +152,16 @@ func (m *Repository) Reservation(w http.ResponseWriter, r *http.Request) {
 
 	data := make(map[string]any)
 	data["reservation"] = res
+
+	restrictionTypes, err := m.DB.GetAllRestrictionTypes()
+
+	if err != nil {
+		helpers.ServerError(w, err)
+		return
+	}
+
+	data["restrictionTypes"] = restrictionTypes
+
 	render.Template(w, r, "make-reservation.page.tmpl", &templateData{
 		Form:      forms.New(nil),
 		Data:      data,
@@ -178,7 +188,7 @@ func (m *Repository) PostReservation(w http.ResponseWriter, r *http.Request) {
 
 	form := forms.New(r.PostForm)
 
-	form.Required("first_name", "last_name", "email", "phone")
+	form.Required("first_name", "last_name", "email", "phone", "restriction_type")
 	form.MinLength("first_name", 3)
 	form.IsValidEmail("email")
 

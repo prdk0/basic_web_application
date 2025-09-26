@@ -87,3 +87,26 @@ func (m *postgreDbRepo) GetRoomById(id int) (models.Room, error) {
 	}
 	return room, nil
 }
+
+func (m *postgreDbRepo) GetAllRestrictionTypes() ([]models.Restriction, error) {
+	var restrictionTypes []models.Restriction
+	ctx, cancel := context.WithTimeout(context.Background(), 3*time.Second)
+	defer cancel()
+	query := `select id, restriction_name from restrictions;`
+	rows, err := m.DB.QueryContext(ctx, query)
+	if err != nil {
+		return restrictionTypes, err
+	}
+	for rows.Next() {
+		var restrictionType models.Restriction
+		err := rows.Scan(&restrictionType.ID, &restrictionType.RestrictionName)
+		if err != nil {
+			return restrictionTypes, err
+		}
+		restrictionTypes = append(restrictionTypes, restrictionType)
+	}
+	if err := rows.Err(); err != nil {
+		return restrictionTypes, err
+	}
+	return restrictionTypes, nil
+}

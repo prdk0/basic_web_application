@@ -8,7 +8,7 @@
     <!-- container -->
     <div class="container" style="margin-top: 60px;">
         <div class="row">
-            <div class="col">
+            <div class="col-md-12">
                 {{$res := index .Data "reservation"}}
                 <h1>Make Reservation</h1>
                 <p>
@@ -17,41 +17,55 @@
                     Departure: {{index .StringMap "end_date"}}
                 </p>
                 <form method="post" action="" class="" novalidate>
-                
-                    <input type="hidden" name="csrf_token" value="{{ .CSRFToken }}">
-                    <input type="hidden" name="start_date" value="{{index .StringMap "start_date"}}"/>
-                    <input type="hidden" name="end_date" value="{{index .StringMap "end_date"}}"/>
-                    <input type="hidden" name="room_id" value="{{$res.RoomID}}"/>
+                    <div class="row">
+                        <div class="col-md-6">
+                            <input type="hidden" name="csrf_token" value="{{ .CSRFToken }}">
+                            <input type="hidden" name="start_date" value="{{index .StringMap "start_date"}}"/>
+                            <input type="hidden" name="end_date" value="{{index .StringMap "end_date"}}"/>
+                            <input type="hidden" name="room_id" value="{{$res.RoomID}}"/>
 
-                    <div class="mb-3">
-                        <label for="first_name" class="form-label">First Name</label>
-                        {{with .Form.Errors.Get "first_name"}}
-                            <label class="text-danger">{{.}}</label>
-                        {{end}}
-                        <input type="text" name="first_name" class="form-control {{with .Form.Errors.Get "first_name"}}is-invalid{{end}}" id="first_name" value="{{$res.FirstName}}" autocomplete="new-password" required>
+                            <div class="mb-3">
+                                <label for="first_name" class="form-label">First Name</label>
+                                {{with .Form.Errors.Get "first_name"}}
+                                    <label class="text-danger">{{.}}</label>
+                                {{end}}
+                                <input type="text" name="first_name" class="form-control {{with .Form.Errors.Get "first_name"}}is-invalid{{end}}" id="first_name" value="{{$res.FirstName}}" autocomplete="new-password" required>
+                            </div>
+                            <div class="mb-3">
+                                <label for="last_name" class="form-label">Last Name</label>
+                                {{with .Form.Errors.Get "last_name"}}
+                                    <label class="text-danger">{{.}}</label>
+                                {{end}}
+                                <input type="text" name="last_name" value="{{$res.LastName}}" class="form-control {{with .Form.Errors.Get "last_name"}}is-invalid{{end}}" id="last_name" autocomplete="new-password" required>
+                            </div>
+                            <div class="mb-3">
+                                <label for="email" class="form-label">Email</label>
+                                {{with .Form.Errors.Get "email"}}
+                                    <label class="text-danger">{{.}}</label>
+                                {{end}}
+                                <input type="email" name="email" value="{{$res.Email}}" class="form-control {{with .Form.Errors.Get "email"}}is-invalid{{end}}" id="email" autocomplete="new-password" required>
+                            </div>
+                            <div class="mb-3">
+                                <label for="phone" class="form-label">Phone</label>
+                                {{with .Form.Errors.Get "phone"}}
+                                    <label class="text-danger">{{.}}</label>
+                                {{end}}
+                                <input type="text" name="phone" value="{{$res.Phone}}" class="form-control {{with .Form.Errors.Get "phone"}}is-invalid{{end}}" id="phone" autocomplete="new-password" required>
+                            </div>
+                        </div>
+                        <div class="col-md-4">
+                            <label class="form-label">Reservation Type</label>
+                            {{with .Form.Errors.Get "restriction-type"}}
+                                    <label class="text-danger">{{.}}</label>
+                                {{end}}
+                             {{$restrictionTypes := index .Data "restrictionTypes"}}
+                            <select class="form-select {{with .Form.Errors.Get "phone"}}is-invalid{{end}}" required name="restriction-type" id="restriction-type">
+                                {{range $index, $option :=  $restrictionTypes}}
+                                    <option value="{{$option.ID}}" {{ if eq $index 0 }}selected{{ end }}>{{$option.RestrictionName}}</option>
+                                {{end}}
+                            </select>
+                        </div>
                     </div>
-                    <div class="mb-3">
-                        <label for="last_name" class="form-label">Last Name</label>
-                        {{with .Form.Errors.Get "last_name"}}
-                            <label class="text-danger">{{.}}</label>
-                        {{end}}
-                        <input type="text" name="last_name" value="{{$res.LastName}}" class="form-control {{with .Form.Errors.Get "last_name"}}is-invalid{{end}}" id="last_name" autocomplete="new-password" required>
-                    </div>
-                    <div class="mb-3">
-                        <label for="email" class="form-label">Email</label>
-                        {{with .Form.Errors.Get "email"}}
-                            <label class="text-danger">{{.}}</label>
-                        {{end}}
-                        <input type="email" name="email" value="{{$res.Email}}" class="form-control {{with .Form.Errors.Get "email"}}is-invalid{{end}}" id="email" autocomplete="new-password" required>
-                    </div>
-                    <div class="mb-3">
-                        <label for="phone" class="form-label">Phone</label>
-                        {{with .Form.Errors.Get "phone"}}
-                            <label class="text-danger">{{.}}</label>
-                        {{end}}
-                        <input type="text" name="phone" value="{{$res.Phone}}" class="form-control {{with .Form.Errors.Get "phone"}}is-invalid{{end}}" id="phone" autocomplete="new-password" required>
-                    </div>
-                    <input type="hidden" name="room_id" value="5"/>
                     <button type="submit" class="btn btn-primary">Make Reservation</button>
                 </form>
             </div>
