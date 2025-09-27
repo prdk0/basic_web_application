@@ -107,8 +107,11 @@ func (m *Repository) PostSearchAvailability(w http.ResponseWriter, r *http.Reque
 }
 
 type JsonResponse struct {
-	Ok      bool   `json:"ok"`
-	Message string `json:"message"`
+	Ok        bool   `json:"ok"`
+	Message   string `json:"message"`
+	RoomID    string `json:"room_id"`
+	StartDate string `json:"start_date"`
+	EndDate   string `json:"end_date"`
 }
 
 func (m *Repository) AvailabilityJSON(w http.ResponseWriter, r *http.Request) {
@@ -117,16 +120,28 @@ func (m *Repository) AvailabilityJSON(w http.ResponseWriter, r *http.Request) {
 	ed := r.Form.Get("end")
 
 	layout := "2006-01-02"
-	startDate, _ := time.Parse(layout, sd)
-	endDate, _ := time.Parse(layout, ed)
+	startDate, err := time.Parse(layout, sd)
+	if err != nil {
+		helpers.ServerError(w, err)
+	}
+	endDate, err := time.Parse(layout, ed)
+	if err != nil {
+		helpers.ServerError(w, err)
+	}
 
-	roomId, _ := strconv.Atoi(r.Form.Get("room_id"))
+	roomId, err := strconv.Atoi(r.Form.Get("room_id"))
+	if err != nil {
+		helpers.ServerError(w, err)
+	}
 
 	availableRoom, _ := m.DB.SearchAvailabilityByDatesByRoomId(startDate, endDate, roomId)
 
 	resp := JsonResponse{
-		Ok:      availableRoom,
-		Message: "Hello from Json Response",
+		Ok:        availableRoom,
+		Message:   "",
+		StartDate: sd,
+		EndDate:   ed,
+		RoomID:    strconv.Itoa(roomId),
 	}
 
 	msg, err := json.MarshalIndent(resp, "", "    ")
