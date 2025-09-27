@@ -153,6 +153,32 @@ func (m *Repository) AvailabilityJSON(w http.ResponseWriter, r *http.Request) {
 	w.Write(msg)
 }
 
+func (m *Repository) BookRoom(w http.ResponseWriter, r *http.Request) {
+
+	roomId, err := strconv.Atoi(r.URL.Query().Get("id"))
+	if err != nil {
+		helpers.ServerError(w, err)
+	}
+
+	layout := "2006-01-02"
+	startDate, err := time.Parse(layout, r.URL.Query().Get("s"))
+	if err != nil {
+		helpers.ServerError(w, err)
+	}
+	endDate, err := time.Parse(layout, r.URL.Query().Get("e"))
+	if err != nil {
+		helpers.ServerError(w, err)
+	}
+
+	var reservation models.Reservation
+	reservation.RoomID = roomId
+	reservation.StartDate = startDate
+	reservation.EndDate = endDate
+
+	m.App.Session.Put(r.Context(), "reservation", reservation)
+	http.Redirect(w, r, "/make-reservation", http.StatusSeeOther)
+}
+
 // Reservation
 
 func (m *Repository) Reservation(w http.ResponseWriter, r *http.Request) {
