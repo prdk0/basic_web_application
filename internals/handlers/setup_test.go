@@ -2,7 +2,6 @@ package handlers
 
 import (
 	"bookings/internals/config"
-	"bookings/internals/driver"
 	"bookings/internals/models"
 	"bookings/internals/render"
 	"encoding/gob"
@@ -50,11 +49,6 @@ func getroutes() http.Handler {
 	session.Cookie.Secure = app.InProduction
 
 	app.Session = session
-
-	db, err := driver.ConnectSQL("")
-	if err != nil {
-		app.ErrorLog.Println(err)
-	}
 	// create template cache from main -> render through config.app, This is doing because it will run only once instead of
 	// running multiple times if you call from render package
 	tc, err := createTestTemplateCache()
@@ -65,7 +59,7 @@ func getroutes() http.Handler {
 	app.UseCache = true
 
 	// repository pattern which helps to implement interfaces
-	repo := NewRepo(&app, db)
+	repo := NeTestwRepo(&app)
 	NewHandlers(repo)
 	render.NewRenderer(&app)
 
