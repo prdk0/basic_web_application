@@ -11,6 +11,7 @@ import (
 	"net/http"
 	"os"
 	"path/filepath"
+	"testing"
 	"time"
 
 	"github.com/alexedwards/scs/v2"
@@ -29,7 +30,7 @@ var session *scs.SessionManager
 var infoLog *log.Logger
 var errorLog *log.Logger
 
-func getroutes() http.Handler {
+func TestMain(m *testing.M) {
 	gob.Register(models.Reservation{})
 
 	// setting app enviroment
@@ -62,6 +63,10 @@ func getroutes() http.Handler {
 	repo := NeTestwRepo(&app)
 	NewHandlers(repo)
 	render.NewRenderer(&app)
+	os.Exit(m.Run())
+}
+
+func getroutes() http.Handler {
 
 	mux := chi.NewRouter()
 	mux.Use(middleware.Logger)
