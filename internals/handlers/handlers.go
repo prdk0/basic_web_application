@@ -178,6 +178,14 @@ func (m *Repository) BookRoom(w http.ResponseWriter, r *http.Request) {
 	}
 
 	var reservation models.Reservation
+	room, err := m.DB.GetRoomById(roomId)
+	if err != nil {
+		m.App.Session.Put(r.Context(), "error", "can't find the room")
+		http.Redirect(w, r, "/", http.StatusTemporaryRedirect)
+		return
+	}
+
+	reservation.Room.RoomName = room.RoomName
 	reservation.RoomID = roomId
 	reservation.StartDate = startDate
 	reservation.EndDate = endDate
@@ -234,7 +242,6 @@ func (m *Repository) PostReservation(w http.ResponseWriter, r *http.Request) {
 		helpers.ServerError(w, err)
 		return
 	}
-
 	reservation.FirstName = r.Form.Get("first_name")
 	reservation.LastName = r.Form.Get("last_name")
 	reservation.Email = r.Form.Get("email")
@@ -249,9 +256,16 @@ func (m *Repository) PostReservation(w http.ResponseWriter, r *http.Request) {
 	if !form.Valid() {
 		data := make(map[string]any)
 		data["reservation"] = reservation
+		sd := reservation.StartDate.Format("2006-01-02")
+		ed := reservation.EndDate.Format("2006-01-02")
+
+		stringMap := make(map[string]string)
+		stringMap["start_date"] = sd
+		stringMap["end_date"] = ed
 		render.Template(w, r, "make-reservation.page.tmpl", &templateData{
-			Form: form,
-			Data: data,
+			Form:      form,
+			Data:      data,
+			StringMap: stringMap,
 		})
 		return
 	}
