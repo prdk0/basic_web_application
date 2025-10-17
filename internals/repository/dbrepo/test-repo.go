@@ -11,11 +11,17 @@ func (m *testDBRepo) AllUser() bool {
 }
 
 func (m *testDBRepo) InsertReservation(res models.Reservation) (int, error) {
-	var id int
-	return id, nil
+	// if the room id is 4, then fail; otherwise, pass
+	if res.RoomID == 6 {
+		return 0, errors.New("some error)")
+	}
+	return 2, nil
 }
 
 func (m *testDBRepo) InsertRoomRestriction(r models.RoomRestriction) error {
+	if r.RoomID == 1000 {
+		return errors.New("some error")
+	}
 	return nil
 }
 

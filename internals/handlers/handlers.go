@@ -10,7 +10,6 @@ import (
 	"bookings/internals/repository"
 	"bookings/internals/repository/dbrepo"
 	"encoding/json"
-	"errors"
 	"log"
 	"net/http"
 	"strconv"
@@ -234,12 +233,14 @@ func (m *Repository) Reservation(w http.ResponseWriter, r *http.Request) {
 func (m *Repository) PostReservation(w http.ResponseWriter, r *http.Request) {
 	reservation, ok := m.App.Session.Get(r.Context(), "reservation").(models.Reservation)
 	if !ok {
-		helpers.ServerError(w, errors.New("reservation not found on session"))
+		m.App.Session.Put(r.Context(), "error", "can't get from session")
+		http.Redirect(w, r, "/", http.StatusTemporaryRedirect)
 		return
 	}
 	err := r.ParseForm()
 	if err != nil {
-		helpers.ServerError(w, err)
+		m.App.Session.Put(r.Context(), "error", "can't parse the form")
+		http.Redirect(w, r, "/", http.StatusTemporaryRedirect)
 		return
 	}
 	reservation.FirstName = r.Form.Get("first_name")
@@ -256,6 +257,7 @@ func (m *Repository) PostReservation(w http.ResponseWriter, r *http.Request) {
 	if !form.Valid() {
 		data := make(map[string]any)
 		data["reservation"] = reservation
+		http.Error(w, "Invalid input format", http.StatusSeeOther)
 		sd := reservation.StartDate.Format("2006-01-02")
 		ed := reservation.EndDate.Format("2006-01-02")
 
@@ -273,7 +275,8 @@ func (m *Repository) PostReservation(w http.ResponseWriter, r *http.Request) {
 	newReservationId, err := m.DB.InsertReservation(reservation)
 
 	if err != nil {
-		helpers.ServerError(w, err)
+		m.App.Session.Put(r.Context(), "error", "can't insert reservation in to database")
+		http.Redirect(w, r, "/", http.StatusTemporaryRedirect)
 		return
 	}
 
@@ -287,7 +290,8 @@ func (m *Repository) PostReservation(w http.ResponseWriter, r *http.Request) {
 
 	err = m.DB.InsertRoomRestriction(restriction)
 	if err != nil {
-		helpers.ServerError(w, err)
+		m.App.Session.Put(r.Context(), "error", "can't insert room restrictions")
+		http.Redirect(w, r, "/", http.StatusTemporaryRedirect)
 		return
 	}
 
@@ -338,7 +342,7 @@ func (m *Repository) PageNotFound(w http.ResponseWriter, r *http.Request) {
 	err := render.Template(w, r, "404.page.tmpl", &models.TemplateData{})
 	if err != nil {
 		log.Fatal(err)
-		http.Error(w, err.Error(), http.StatusInternalServerError)
+		http.Error(w, err.Error(), http.StatusNotFound)
 		return
 	}
 }
