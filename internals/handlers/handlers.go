@@ -122,9 +122,23 @@ type JsonResponse struct {
 
 func (m *Repository) AvailabilityJSON(w http.ResponseWriter, r *http.Request) {
 
+	err := r.ParseForm()
+	if err != nil {
+		resp := JsonResponse{
+			Ok:      false,
+			Message: "Internal Server Error",
+		}
+
+		out, _ := json.MarshalIndent(resp, "", "	")
+
+		w.Header().Set("Content-Type", "application/json")
+		w.Write(out)
+		return
+	}
+
 	sd := r.Form.Get("start")
 	ed := r.Form.Get("end")
-
+	log.Println(sd, ed, "I'm here!")
 	layout := "2006-01-02"
 	startDate, err := time.Parse(layout, sd)
 	if err != nil {
@@ -140,7 +154,19 @@ func (m *Repository) AvailabilityJSON(w http.ResponseWriter, r *http.Request) {
 		helpers.ServerError(w, err)
 	}
 
-	availableRoom, _ := m.DB.SearchAvailabilityByDatesByRoomId(startDate, endDate, roomId)
+	availableRoom, err := m.DB.SearchAvailabilityByDatesByRoomId(startDate, endDate, roomId)
+	if err != nil {
+		resp := JsonResponse{
+			Ok:      false,
+			Message: "Error connecting to database",
+		}
+
+		out, _ := json.MarshalIndent(resp, "", "	")
+
+		w.Header().Set("Content-Type", "application/json")
+		w.Write(out)
+		return
+	}
 
 	resp := JsonResponse{
 		Ok:        availableRoom,
@@ -150,11 +176,7 @@ func (m *Repository) AvailabilityJSON(w http.ResponseWriter, r *http.Request) {
 		RoomID:    strconv.Itoa(roomId),
 	}
 
-	msg, err := json.MarshalIndent(resp, "", "    ")
-	if err != nil {
-		helpers.ServerError(w, err)
-		return
-	}
+	msg, _ := json.MarshalIndent(resp, "", "    ")
 	w.Header().Set("Content-Type", "application/json")
 	w.Write(msg)
 }
