@@ -287,6 +287,7 @@ func TestRepository_PostReservation(t *testing.T) {
 }
 
 func TestRepository_AvailabilityJSON(t *testing.T) {
+	// all room not available
 	reqBody := url.Values{}
 	reqBody.Add("start", "2050-01-01")
 	reqBody.Add("end", "2050-01-01")
@@ -305,6 +306,119 @@ func TestRepository_AvailabilityJSON(t *testing.T) {
 	err := json.Unmarshal(rr.Body.Bytes(), &j)
 	if err != nil {
 		t.Error("failed to parse json")
+	}
+
+	if j.Ok {
+		t.Error("Got availability when none was expected in AvailabilityJSON")
+	}
+
+	// rooms not available
+
+	reqBody = url.Values{}
+	reqBody.Add("start", "2040-01-01")
+	reqBody.Add("end", "2040-01-02")
+	reqBody.Add("room_id", "4")
+
+	req, _ = http.NewRequest("POST", "/search-availability-json", strings.NewReader(reqBody.Encode()))
+
+	// get the context with session
+	ctx = getCtx(req)
+	req = req.WithContext(ctx)
+
+	// set the request header
+	req.Header.Set("Content-Type", "application/x-www-form-urlencoded")
+
+	// create our response recorder, which satisfies the requirements
+	// for http.ResponseWriter
+	rr = httptest.NewRecorder()
+
+	// make our handler a http.HandlerFunc
+	handler = http.HandlerFunc(Repo.AvailabilityJSON)
+
+	// make the request to our handler
+	handler.ServeHTTP(rr, req)
+
+	// this time we want to parse JSON and get the expected response
+	err = json.Unmarshal(rr.Body.Bytes(), &j)
+	if err != nil {
+		t.Error("failed to parse json!")
+	}
+
+	// since we specified a start date < 2049-12-31, we expect availability
+	if !j.Ok {
+		t.Error("Got no availability when some was expected in AvailabilityJSON")
+	}
+
+	/*****************************************
+	// third case -- no request body
+	*****************************************/
+	// create our request
+	req, _ = http.NewRequest("POST", "/search-availability-json", nil)
+
+	// get the context with session
+	ctx = getCtx(req)
+	req = req.WithContext(ctx)
+
+	// set the request header
+	req.Header.Set("Content-Type", "application/x-www-form-urlencoded")
+
+	// create our response recorder, which satisfies the requirements
+	// for http.ResponseWriter
+	rr = httptest.NewRecorder()
+
+	// make our handler a http.HandlerFunc
+	handler = http.HandlerFunc(Repo.AvailabilityJSON)
+
+	// make the request to our handler
+	handler.ServeHTTP(rr, req)
+
+	// this time we want to parse JSON and get the expected response
+	err = json.Unmarshal(rr.Body.Bytes(), &j)
+	if err != nil {
+		t.Error("failed to parse json!")
+	}
+
+	// since we specified a start date < 2049-12-31, we expect availability
+	if j.Ok || j.Message != "Internal server error" {
+		t.Error("Got availability when request body was empty")
+	}
+
+	/*****************************************
+	// fourth case -- database error
+	*****************************************/
+	// create our request body
+	reqBody = url.Values{}
+	reqBody.Add("start", "2060-01-01")
+	reqBody.Add("end", "2060-01-02")
+	reqBody.Add("room_id", "4")
+	req, _ = http.NewRequest("POST", "/search-availability-json", strings.NewReader(reqBody.Encode()))
+
+	// get the context with session
+	ctx = getCtx(req)
+	req = req.WithContext(ctx)
+
+	// set the request header
+	req.Header.Set("Content-Type", "application/x-www-form-urlencoded")
+
+	// create our response recorder, which satisfies the requirements
+	// for http.ResponseWriter
+	rr = httptest.NewRecorder()
+
+	// make our handler a http.HandlerFunc
+	handler = http.HandlerFunc(Repo.AvailabilityJSON)
+
+	// make the request to our handler
+	handler.ServeHTTP(rr, req)
+
+	// this time we want to parse JSON and get the expected response
+	err = json.Unmarshal(rr.Body.Bytes(), &j)
+	if err != nil {
+		t.Error("failed to parse json!")
+	}
+
+	// since we specified a start date < 2049-12-31, we expect availability
+	if j.Ok || j.Message != "Error querying database" {
+		t.Error("Got availability when simulating database error")
 	}
 }
 

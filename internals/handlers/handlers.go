@@ -126,7 +126,7 @@ func (m *Repository) AvailabilityJSON(w http.ResponseWriter, r *http.Request) {
 	if err != nil {
 		resp := JsonResponse{
 			Ok:      false,
-			Message: "Internal Server Error",
+			Message: "Internal server error",
 		}
 
 		out, _ := json.MarshalIndent(resp, "", "	")
@@ -157,7 +157,7 @@ func (m *Repository) AvailabilityJSON(w http.ResponseWriter, r *http.Request) {
 	if err != nil {
 		resp := JsonResponse{
 			Ok:      false,
-			Message: "Error connecting to database",
+			Message: "Error querying database",
 		}
 
 		out, _ := json.MarshalIndent(resp, "", "	")
