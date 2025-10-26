@@ -13,9 +13,8 @@ import (
 	"log"
 	"net/http"
 	"strconv"
+	"strings"
 	"time"
-
-	"github.com/go-chi/chi/v5"
 )
 
 var Repo *Repository
@@ -278,7 +277,7 @@ func (m *Repository) PostReservation(w http.ResponseWriter, r *http.Request) {
 	if !form.Valid() {
 		data := make(map[string]any)
 		data["reservation"] = reservation
-		http.Error(w, "Invalid input format", http.StatusSeeOther)
+		// http.Error(w, "Invalid input format", http.StatusSeeOther)
 		sd := reservation.StartDate.Format("2006-01-02")
 		ed := reservation.EndDate.Format("2006-01-02")
 
@@ -321,14 +320,19 @@ func (m *Repository) PostReservation(w http.ResponseWriter, r *http.Request) {
 }
 
 func (m *Repository) ChooseRoom(w http.ResponseWriter, r *http.Request) {
-	roomId, err := strconv.Atoi(chi.URLParam(r, "id"))
+	// roomId, err := strconv.Atoi(chi.URLParam(r, "id"))
+	urlSlitter := strings.Split(r.RequestURI, "/")
+	roomId, err := strconv.Atoi(urlSlitter[2])
 	if err != nil {
-		helpers.ServerError(w, err)
+		m.App.Session.Put(r.Context(), "error", "can't get the roomId")
+		http.Redirect(w, r, "/", http.StatusTemporaryRedirect)
 		return
 	}
 	res, ok := m.App.Session.Get(r.Context(), "reservation").(models.Reservation)
 	if !ok {
-		helpers.ServerError(w, err)
+		m.App.Session.Put(r.Context(), "error", "can't get the session")
+		http.Redirect(w, r, "/", http.StatusTemporaryRedirect)
+		return
 	}
 
 	res.RoomID = roomId
