@@ -138,7 +138,6 @@ func (m *Repository) AvailabilityJSON(w http.ResponseWriter, r *http.Request) {
 
 	sd := r.Form.Get("start")
 	ed := r.Form.Get("end")
-	log.Println(sd, ed, "I'm here!")
 	layout := "2006-01-02"
 	startDate, err := time.Parse(layout, sd)
 	if err != nil {
