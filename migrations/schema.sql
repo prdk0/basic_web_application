@@ -2,10 +2,10 @@
 -- PostgreSQL database dump
 --
 
-\restrict 6Eg2gWix8OFmU1oiCMpq293KdEUqnPxet0ePsez0roVQCw9488RBzdKmKkXdgMe
+\restrict WbBloQWsKk4U8KEhjUZvOpjFDzom9uaMZepc0pdeHmDqxOtLo8TQjGFWNWzEf4u
 
--- Dumped from database version 17.6
--- Dumped by pg_dump version 17.6
+-- Dumped from database version 18.1
+-- Dumped by pg_dump version 18.1
 
 SET statement_timeout = 0;
 SET lock_timeout = 0;
@@ -396,5 +396,5 @@ ALTER TABLE ONLY public.room_restrictions
 -- PostgreSQL database dump complete
 --
 
-\unrestrict 6Eg2gWix8OFmU1oiCMpq293KdEUqnPxet0ePsez0roVQCw9488RBzdKmKkXdgMe
+\unrestrict WbBloQWsKk4U8KEhjUZvOpjFDzom9uaMZepc0pdeHmDqxOtLo8TQjGFWNWzEf4u
 

@@ -89,7 +89,9 @@ func (m *Repository) PostSearchAvailability(w http.ResponseWriter, r *http.Reque
 
 	rooms, err := m.DB.SearchAvailabilityForAllrooms(startDate, endDate)
 	if err != nil {
-		helpers.ServerError(w, err)
+		m.App.Session.Put(r.Context(), "error", "database error")
+		http.Redirect(w, r, "/search-availability", http.StatusSeeOther)
+		return
 	}
 
 	if len(rooms) == 0 {
@@ -98,7 +100,7 @@ func (m *Repository) PostSearchAvailability(w http.ResponseWriter, r *http.Reque
 		return
 	}
 
-	data := make(map[string]interface{})
+	data := make(map[string]any)
 	data["rooms"] = rooms
 
 	reservation := models.Reservation{
@@ -183,17 +185,23 @@ func (m *Repository) BookRoom(w http.ResponseWriter, r *http.Request) {
 
 	roomId, err := strconv.Atoi(r.URL.Query().Get("id"))
 	if err != nil {
-		helpers.ServerError(w, err)
+		m.App.Session.Put(r.Context(), "error", "can't find the id")
+		http.Redirect(w, r, "/", http.StatusTemporaryRedirect)
+		return
 	}
 
 	layout := "2006-01-02"
 	startDate, err := time.Parse(layout, r.URL.Query().Get("s"))
 	if err != nil {
-		helpers.ServerError(w, err)
+		m.App.Session.Put(r.Context(), "error", "can't find the start date")
+		http.Redirect(w, r, "/", http.StatusTemporaryRedirect)
+		return
 	}
 	endDate, err := time.Parse(layout, r.URL.Query().Get("e"))
 	if err != nil {
-		helpers.ServerError(w, err)
+		m.App.Session.Put(r.Context(), "error", "can't find the end date")
+		http.Redirect(w, r, "/", http.StatusTemporaryRedirect)
+		return
 	}
 
 	var reservation models.Reservation
@@ -277,7 +285,7 @@ func (m *Repository) PostReservation(w http.ResponseWriter, r *http.Request) {
 	if !form.Valid() {
 		data := make(map[string]any)
 		data["reservation"] = reservation
-		// http.Error(w, "Invalid input format", http.StatusSeeOther)
+		http.Error(w, "Invalid input format", http.StatusSeeOther)
 		sd := reservation.StartDate.Format("2006-01-02")
 		ed := reservation.EndDate.Format("2006-01-02")
 
@@ -305,7 +313,7 @@ func (m *Repository) PostReservation(w http.ResponseWriter, r *http.Request) {
 		EndDate:       reservation.EndDate,
 		RoomID:        reservation.RoomID,
 		ReservationID: newReservationId,
-		RestrictionID: 2,
+		RestrictionID: 3,
 	}
 
 	err = m.DB.InsertRoomRestriction(restriction)
