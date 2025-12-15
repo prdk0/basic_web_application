@@ -16,7 +16,7 @@ func (m *testDBRepo) InsertReservation(res models.Reservation) (int, error) {
 	if res.RoomID == 6 {
 		return 0, errors.New("some error)")
 	}
-	return 2, nil
+	return 1, nil
 }
 
 func (m *testDBRepo) InsertRoomRestriction(r models.RoomRestriction) error {

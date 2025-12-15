@@ -123,15 +123,16 @@ func TestRepository_PostReservation(t *testing.T) {
 	sd, _ := time.Parse(layout, "2050-01-1")
 	ed, _ := time.Parse(layout, "2050-01-2")
 	reservation := models.Reservation{
-		RoomID:    4,
+		RoomID:    1,
 		StartDate: sd,
 		EndDate:   ed,
 		Room: models.Room{
-			ID:       4,
+			ID:       1,
 			RoomName: "General's Quaters",
 		},
 	}
 	reqBody := "first_name=John"
+	reqBody = fmt.Sprintf("%s&%s", reqBody, "restrictions=3")
 	reqBody = fmt.Sprintf("%s&%s", reqBody, "last_name=Smith")
 	reqBody = fmt.Sprintf("%s&%s", reqBody, "email=john@smith.com")
 	reqBody = fmt.Sprintf("%s&%s", reqBody, "phone=28394984")
