@@ -55,7 +55,7 @@ func (m *postgreDbRepo) SearchAvailabilityForAllrooms(start, end time.Time) ([]m
 	defer cancel()
 	var rooms []models.Room
 	query := `SELECT r.id, r.room_name
-			  FROM rooms r 
+			  FROM rooms r
 			  WHERE r.id NOT IN (SELECT rr.room_id FROM room_restrictions rr WHERE $1 < end_date and $2 > start_date);`
 	rows, err := m.DB.QueryContext(ctx, query, start, end)
 	if err != nil {
@@ -86,4 +86,29 @@ func (m *postgreDbRepo) GetRoomById(id int) (models.Room, error) {
 		return room, err
 	}
 	return room, nil
+}
+
+func (m *postgreDbRepo) GetRestrictions() ([]models.Restriction, error) {
+	ctx, cancel := context.WithTimeout(context.Background(), 3*time.Second)
+	defer cancel()
+	var restrictions []models.Restriction
+	query := `select id, restriction_name from restrictions;`
+	rows, err := m.DB.QueryContext(ctx, query)
+	if err != nil {
+		return restrictions, err
+	}
+	for rows.Next() {
+		var restriction models.Restriction
+		err := rows.Scan(&restriction.ID, &restriction.RestrictionName)
+		if err != nil {
+			return restrictions, err
+		}
+		restrictions = append(restrictions, restriction)
+	}
+
+	if err := rows.Err(); err != nil {
+		return restrictions, err
+	}
+
+	return restrictions, nil
 }

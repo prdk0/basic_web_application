@@ -231,6 +231,13 @@ func (m *Repository) Reservation(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
+	restrictions, err := m.DB.GetRestrictions()
+	if err != nil {
+		m.App.Session.Put(r.Context(), "error", "can't find the restrictions")
+		http.Redirect(w, r, "/", http.StatusTemporaryRedirect)
+		return
+	}
+
 	room, err := m.DB.GetRoomById(res.RoomID)
 	if err != nil {
 		m.App.Session.Put(r.Context(), "error", "can't find the room")
@@ -251,6 +258,7 @@ func (m *Repository) Reservation(w http.ResponseWriter, r *http.Request) {
 
 	data := make(map[string]any)
 	data["reservation"] = res
+	data["restrictions"] = restrictions
 	render.Template(w, r, "make-reservation.page.tmpl", &templateData{
 		Form:      forms.New(nil),
 		Data:      data,
@@ -308,12 +316,22 @@ func (m *Repository) PostReservation(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
+	restriction_selected_value := r.FormValue("restrictions")
+
+	selected_value, err := strconv.Atoi(restriction_selected_value)
+
+	if err != nil {
+		m.App.Session.Put(r.Context(), "error", "error in selected value")
+		http.Redirect(w, r, "/", http.StatusTemporaryRedirect)
+		return
+	}
+
 	restriction := models.RoomRestriction{
 		StartDate:     reservation.StartDate,
 		EndDate:       reservation.EndDate,
 		RoomID:        reservation.RoomID,
 		ReservationID: newReservationId,
-		RestrictionID: 3,
+		RestrictionID: selected_value,
 	}
 
 	err = m.DB.InsertRoomRestriction(restriction)

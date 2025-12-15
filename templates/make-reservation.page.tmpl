@@ -9,6 +9,7 @@
     <div class="container" style="margin-top: 60px;">
         <div class="row">
             <div class="col">
+                {{$restri := index .Data "restrictions"}}
                 {{$res := index .Data "reservation"}}
                 <h1>Make Reservation</h1>
                 <p>
@@ -22,6 +23,15 @@
                     <input type="hidden" name="start_date" value="{{index .StringMap "start_date"}}"/>
                     <input type="hidden" name="end_date" value="{{index .StringMap "end_date"}}"/>
                     <input type="hidden" name="room_id" value="{{$res.RoomID}}"/>
+
+                    <div class="mb-3">
+                        <label for="restrictions" class="form-label">Restriction Category:</label>
+                        <select id="restrictions" name="restrictions" class="form-select">
+                            {{range $i, $v := $restri}}
+                                <option value={{$v.ID}}>{{$v.RestrictionName}}</option>
+	                        {{end}}
+                        </select>
+                    </div>
 
                     <div class="mb-3">
                         <label for="first_name" class="form-label">First Name</label>

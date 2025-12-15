@@ -67,3 +67,8 @@ func (m *testDBRepo) GetRoomById(id int) (models.Room, error) {
 	}
 	return room, nil
 }
+
+func (m *testDBRepo) GetRestrictions() ([]models.Restriction, error) {
+	var restrictions []models.Restriction
+	return restrictions, nil
+}
