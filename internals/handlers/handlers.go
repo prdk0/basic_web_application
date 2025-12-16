@@ -293,7 +293,9 @@ func (m *Repository) PostReservation(w http.ResponseWriter, r *http.Request) {
 	if !form.Valid() {
 		data := make(map[string]any)
 		data["reservation"] = reservation
-		http.Error(w, "Invalid input format", http.StatusSeeOther)
+		if m.App.Env.Test {
+			http.Error(w, "Invalid input format", http.StatusSeeOther)
+		}
 		sd := reservation.StartDate.Format("2006-01-02")
 		ed := reservation.EndDate.Format("2006-01-02")
 

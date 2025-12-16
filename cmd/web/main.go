@@ -40,7 +40,7 @@ func main() {
 		Handler: router(&app),
 	}
 	fmt.Printf("Sever listening to the port %s\n", PORT)
-	srv.ListenAndServe()
+	err = srv.ListenAndServe()
 	if err != nil {
 		fmt.Println(err)
 	}
@@ -54,7 +54,7 @@ func run() (*driver.DB, error) {
 
 	// setting app enviroment
 	app.InProduction = false
-
+	app.Env.SetEviroment("dev")
 	//logger
 
 	infoLog = log.New(os.Stdout, "INFO\t", log.Ldate|log.Ltime)
