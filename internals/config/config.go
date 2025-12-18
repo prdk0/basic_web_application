@@ -1,6 +1,7 @@
 package config
 
 import (
+	"bookings/internals/models"
 	"fmt"
 	"html/template"
 	"log"
@@ -16,6 +17,7 @@ type AppConfig struct {
 	InProduction  bool
 	Env           EnvRn
 	Session       *scs.SessionManager
+	MailChan      chan models.MailData
 }
 
 type EnvRn struct {

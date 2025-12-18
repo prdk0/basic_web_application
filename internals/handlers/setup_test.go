@@ -36,6 +36,8 @@ func TestMain(m *testing.M) {
 	// setting app enviroment
 	app.InProduction = false
 
+	app.Env.SetEviroment("test")
+
 	infoLog = log.New(os.Stdout, "INFO\t", log.Ldate|log.Ltime)
 	app.InfoLog = infoLog
 
