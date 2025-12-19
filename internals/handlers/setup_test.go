@@ -52,6 +52,13 @@ func TestMain(m *testing.M) {
 	session.Cookie.Secure = app.InProduction
 
 	app.Session = session
+
+	mailChan := make(chan models.MailData)
+	app.MailChan = mailChan
+	defer close(mailChan)
+
+	listenForMail()
+
 	// create template cache from main -> render through config.app, This is doing because it will run only once instead of
 	// running multiple times if you call from render package
 	tc, err := createTestTemplateCache()
@@ -66,6 +73,14 @@ func TestMain(m *testing.M) {
 	NewHandlers(repo)
 	render.NewRenderer(&app)
 	os.Exit(m.Run())
+}
+
+func listenForMail() {
+	go func() {
+		for {
+			_ = <-app.MailChan
+		}
+	}()
 }
 
 func getroutes() http.Handler {
