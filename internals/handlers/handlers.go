@@ -408,6 +408,18 @@ func (m *Repository) ReservationSummary(w http.ResponseWriter, r *http.Request) 
 	})
 }
 
+// Login
+func (m *Repository) ShowLogin(w http.ResponseWriter, r *http.Request) {
+	err := render.Template(w, r, "login.page.tmpl", &models.TemplateData{
+		Form: forms.New(nil),
+	})
+	if err != nil {
+		log.Fatal(err)
+		http.Error(w, err.Error(), http.StatusNotFound)
+		return
+	}
+}
+
 func (m *Repository) PageNotFound(w http.ResponseWriter, r *http.Request) {
 	err := render.Template(w, r, "404.page.tmpl", &models.TemplateData{})
 	if err != nil {
