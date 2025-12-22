@@ -420,6 +420,67 @@ func (m *Repository) ShowLogin(w http.ResponseWriter, r *http.Request) {
 	}
 }
 
+func (m *Repository) PostShowLogin(w http.ResponseWriter, r *http.Request) {
+	_ = m.App.Session.RenewToken(r.Context())
+
+	err := r.ParseForm()
+	if err != nil {
+		log.Println(err)
+	}
+
+	email := r.Form.Get("email")
+	password := r.Form.Get("password")
+
+	user := models.User{}
+
+	user.Email = email
+	user.Password = password
+
+	m.App.Session.Put(r.Context(), "loginDetails", user)
+
+	form := forms.New(r.PostForm)
+	form.Required("email", "password")
+	form.IsValidEmail("email")
+	if !form.Valid() {
+		loginDetails := m.App.Session.Get(r.Context(), "loginDetails").(models.User)
+		data := make(map[string]any)
+		data["loginDetails"] = loginDetails
+		err := render.Template(w, r, "login.page.tmpl", &models.TemplateData{
+			Form: form,
+			Data: data,
+		})
+
+		if err != nil {
+			log.Fatal(err)
+			http.Error(w, err.Error(), http.StatusNotFound)
+			return
+		}
+		return
+	}
+	user_id, _, err := m.DB.Authenticate(user.Email, user.Password)
+	if err != nil {
+		m.App.Session.Put(r.Context(), "error", "wrong username or password")
+		loginDetails := m.App.Session.Get(r.Context(), "loginDetails").(models.User)
+		data := make(map[string]any)
+		data["loginDetails"] = loginDetails
+		err := render.Template(w, r, "login.page.tmpl", &models.TemplateData{
+			Form: form,
+			Data: data,
+		})
+
+		if err != nil {
+			log.Fatal(err)
+			http.Error(w, err.Error(), http.StatusNotFound)
+			return
+		}
+		return
+	}
+	user.ID = user_id
+	m.App.Session.Put(r.Context(), "loginDetails", user)
+	m.App.Session.Put(r.Context(), "flash", "Logged in successfully")
+	http.Redirect(w, r, "/", http.StatusSeeOther)
+}
+
 func (m *Repository) PageNotFound(w http.ResponseWriter, r *http.Request) {
 	err := render.Template(w, r, "404.page.tmpl", &models.TemplateData{})
 	if err != nil {

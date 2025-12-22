@@ -8,21 +8,23 @@
     <div class="container" style="margin-top: 60px">
         <div class="row">
             <div class="col">
+                {{$log := index .Data "loginDetails"}}
                 <h1>Login</h1>
-                <form method="post" action="" class="" novalidate>
+                <form method="post" action="/user/login" class="" novalidate>
+                    <input type="hidden" name="csrf_token" value="{{ .CSRFToken }}">
                     <div class="mb-3">
                         <label for="email" class="form-label">Email</label>
                         {{with .Form.Errors.Get "email"}}
                             <label class="text-danger">{{.}}</label>
                         {{end}}
-                        <input type="email" name="email" value="" class="form-control {{with .Form.Errors.Get "email"}}is-invalid{{end}}" id="email" autocomplete="off" required>
+                        <input type="email" name="email" value="{{$log.Email}}" class="form-control {{with .Form.Errors.Get "email"}}is-invalid{{end}}" id="email" autocomplete="off" required>
                     </div>
                     <div  class="mb-3">
                         <label for="password" class="form-label">Password</label>
                         {{with .Form.Errors.Get "password"}}
                             <label class="text-danger">{{.}}</label>
                         {{end}}
-                        <input type="password" name="password" value="" class="form-control {{with .Form.Errors.Get "password"}}is-invalid{{end}}" id="password" autocomplete="off" required>
+                        <input type="password" name="password" value="{{$log.Password}}" class="form-control {{with .Form.Errors.Get "password"}}is-invalid{{end}}" id="password" autocomplete="off" required>
                     </div>
                     <input type="submit" class="btn btn-primary" value="submit">
                 </form>
