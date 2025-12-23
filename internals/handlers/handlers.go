@@ -488,6 +488,14 @@ func (m *Repository) Logout(w http.ResponseWriter, r *http.Request) {
 	http.Redirect(w, r, "/user/login", http.StatusSeeOther)
 }
 
+func (m *Repository) Dashboard(w http.ResponseWriter, r *http.Request) {
+	err := render.Template(w, r, "admin-dashboard.page.tmpl", &models.TemplateData{})
+	if err != nil {
+		http.Error(w, err.Error(), http.StatusNotFound)
+		return
+	}
+}
+
 func (m *Repository) PageNotFound(w http.ResponseWriter, r *http.Request) {
 	err := render.Template(w, r, "404.page.tmpl", &models.TemplateData{})
 	if err != nil {

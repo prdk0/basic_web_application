@@ -38,6 +38,11 @@ func router(app *config.AppConfig) http.Handler {
 	mux.Post("/user/login", handlers.Repo.PostShowLogin)
 	mux.Get("/user/logout", handlers.Repo.Logout)
 
+	mux.Route("/admin", func(mux chi.Router) {
+		mux.Use(Auth)
+		mux.Get("/dashboard", handlers.Repo.Dashboard)
+	})
+
 	// 404
 	mux.NotFound(handlers.Repo.PageNotFound)
 
