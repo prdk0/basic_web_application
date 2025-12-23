@@ -5,3 +5,8 @@ go run $(ls -1 ./cmd/web/*.go | grep -v _test.go)
 profile coverage
 -------------------------------------
 go test -coverprofile=coverage.out && go tool cover -html=coverage.out
+
+
+database migration tool - soda 
+--------------------------------
+https://gobuffalo.io/documentation/database/soda/

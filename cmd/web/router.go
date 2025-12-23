@@ -36,6 +36,7 @@ func router(app *config.AppConfig) http.Handler {
 	// login
 	mux.Get("/user/login", handlers.Repo.ShowLogin)
 	mux.Post("/user/login", handlers.Repo.PostShowLogin)
+	mux.Get("/user/logout", handlers.Repo.Logout)
 
 	// 404
 	mux.NotFound(handlers.Repo.PageNotFound)

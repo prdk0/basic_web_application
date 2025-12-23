@@ -477,8 +477,15 @@ func (m *Repository) PostShowLogin(w http.ResponseWriter, r *http.Request) {
 	}
 	user.ID = user_id
 	m.App.Session.Put(r.Context(), "loginDetails", user)
+	m.App.Session.Put(r.Context(), "user_id", user.ID)
 	m.App.Session.Put(r.Context(), "flash", "Logged in successfully")
 	http.Redirect(w, r, "/", http.StatusSeeOther)
+}
+
+func (m *Repository) Logout(w http.ResponseWriter, r *http.Request) {
+	_ = m.App.Session.Destroy(r.Context())
+	_ = m.App.Session.RenewToken(r.Context())
+	http.Redirect(w, r, "/user/login", http.StatusSeeOther)
 }
 
 func (m *Repository) PageNotFound(w http.ResponseWriter, r *http.Request) {
