@@ -15,6 +15,7 @@ func router(app *config.AppConfig) http.Handler {
 	mux.Use(middleware.Recoverer)
 	mux.Use(NoSurf)
 	mux.Use(SessionLoad)
+
 	mux.Get("/", handlers.Repo.Home)
 	mux.Get("/about", handlers.Repo.About)
 	mux.Get("/contact", handlers.Repo.Contact)
@@ -34,8 +35,11 @@ func router(app *config.AppConfig) http.Handler {
 	mux.Get("/reservation-summary", handlers.Repo.ReservationSummary)
 
 	// login
-	mux.Get("/user/login", handlers.Repo.ShowLogin)
-	mux.Post("/user/login", handlers.Repo.PostShowLogin)
+	mux.Route("/user", func(mux chi.Router) {
+		mux.Use(redirectIfAuthenticated)
+		mux.Get("/login", handlers.Repo.ShowLogin)
+		mux.Post("/login", handlers.Repo.PostShowLogin)
+	})
 	mux.Get("/user/logout", handlers.Repo.Logout)
 
 	mux.Route("/admin", func(mux chi.Router) {
