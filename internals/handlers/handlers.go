@@ -505,7 +505,17 @@ func (m *Repository) AdminListNewReservations(w http.ResponseWriter, r *http.Req
 }
 
 func (m *Repository) AdminsListAllReservations(w http.ResponseWriter, r *http.Request) {
-	err := render.Template(w, r, "admin-all-reservations.page.tmpl", &models.TemplateData{})
+
+	reservations, err := m.DB.AllReservations()
+	if err != nil {
+		m.App.ErrorLog.Println(err)
+	}
+	data := make(map[string]any)
+	data["reservations"] = reservations
+
+	err = render.Template(w, r, "admin-all-reservations.page.tmpl", &models.TemplateData{
+		Data: data,
+	})
 	if err != nil {
 		http.Error(w, err.Error(), http.StatusNotFound)
 		return
