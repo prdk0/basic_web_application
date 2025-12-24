@@ -1,0 +1,164 @@
+{{define "admin"}}
+    <!DOCTYPE html>
+    <html lang="en">
+    <head>
+        <meta charset="UTF-8" />
+        <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+        <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+        <link rel="shortcut icon" href="assets/images/favicon.svg" type="image/x-icon" />
+        <!-- ========== All CSS files linkup ========= -->
+        <link rel="stylesheet" href="/static/admin/assets/css/bootstrap.min.css" />
+        <link rel="stylesheet" href="/static/admin/assets/css/lineicons.css" rel="stylesheet" type="text/css" />
+        <link rel="stylesheet" href="/static/admin/assets/css/materialdesignicons.min.css" rel="stylesheet" type="text/css" />
+        <link rel="stylesheet" href="/static/admin/assets/css/main.css" />
+        {{block "tab-title" .}}
+        {{end}}
+        {{block "css" . }}
+
+        {{end}}
+    </head>
+    <body>
+        <!-- ======== Preloader =========== -->
+        <div id="preloader">
+        <div class="spinner"></div>
+        </div>
+        <!-- ======== Preloader =========== -->
+
+        <!-- ======== sidebar-nav start =========== -->
+        <aside class="sidebar-nav-wrapper">
+        <div class="navbar-logo">
+            <a >
+            <img src="/static/admin/assets/images/logo/logo.svg" alt="logo" />
+            </a>
+        </div>
+        <nav class="sidebar-nav">
+            <ul>
+            <li class="nav-item active" aria-current="page">
+                <a href="/admin/dashboard">
+                <span class="icon">
+                    <svg width="20" height="20" viewBox="0 0 20 20" fill="none" xmlns="http://www.w3.org/2000/svg">
+                    <path
+                        d="M8.74999 18.3333C12.2376 18.3333 15.1364 15.8128 15.7244 12.4941C15.8448 11.8143 15.2737 11.25 14.5833 11.25H9.99999C9.30966 11.25 8.74999 10.6903 8.74999 10V5.41666C8.74999 4.7263 8.18563 4.15512 7.50586 4.27556C4.18711 4.86357 1.66666 7.76243 1.66666 11.25C1.66666 15.162 4.83797 18.3333 8.74999 18.3333Z" />
+                    <path
+                        d="M17.0833 10C17.7737 10 18.3432 9.43708 18.2408 8.75433C17.7005 5.14918 14.8508 2.29947 11.2457 1.75912C10.5629 1.6568 10 2.2263 10 2.91665V9.16666C10 9.62691 10.3731 10 10.8333 10H17.0833Z" />
+                    </svg>
+                </span>
+                <span class="text">Dashboard</span>
+                </a>
+            </li>
+            <li class="nav-item nav-item-has-children">
+                <a
+                href="#0"
+                class="collapsed"
+                data-bs-toggle="collapse"
+                data-bs-target="#ddmenu_2"
+                aria-controls="ddmenu_2"
+                aria-expanded="false"
+                aria-label="Toggle navigation"
+                >
+                <span class="icon">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-calendar-check" viewBox="0 0 16 16">
+  <path d="M10.854 7.146a.5.5 0 0 1 0 .708l-3 3a.5.5 0 0 1-.708 0l1.5-1.5a.5.5 0 1 0-.708-.708L6.5 9.793l-1.5-1.5a.5.5 0 1 0-.708.708l2 2a.5.5 0 0 0 .708 0l3-3a.5.5 0 0 0 0-.708"/>
+  <path d="M1 3.5c0 .276.224.5.5.5H2v1h11V4h.5c.276 0 .5-.224.5-.5V2H1z"/>
+  <path d="M1 0c-.276 0-.5.224-.5.5v14c0 .276.224.5.5.5h14c.276 0 .5-.224.5-.5v-14c0-.276-.224-.5-.5-.5H1zm0 1h14v2H1zm0 3h14v10H1z"/>
+</svg>
+                </span>
+                <span class="text">Reservations</span>
+                </a>
+                <ul id="ddmenu_2" class="collapse dropdown-nav">
+                <li>
+                    <a href="#"> New Reservation </a>
+                </li>
+                <li>
+                    <a href="#"> All Reservations </a>
+                </li>
+                </ul>
+            </li>
+            <li class="nav-item">
+                <a href="/admin/dashboard">
+                <span class="icon">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-calendar-fill" viewBox="0 0 16 16">
+  <path d="M3.5 0a.5.5 0 0 1 .5.5V1h8V.5a.5.5 0 0 1 1 0V1h1a2 2 0 0 1 2 2v11a2 2 0 0 1-2 2H2a2 2 0 0 1-2-2V5h16V4H0V3a2 2 0 0 1 2-2h1V.5a.5.5 0 0 1 .5-.5"/>
+</svg>
+                </span>
+                <span class="text">Reservation Callendar</span>
+                </a>
+            </li>
+            </ul>
+        </nav>
+        </aside>
+        <div class="overlay"></div>
+        <!-- ======== sidebar-nav end =========== -->
+
+        <!-- ======== main-wrapper start =========== -->
+        <main class="main-wrapper">
+        <!-- ========== header start ========== -->
+        <header class="header">
+            <div class="container-fluid">
+            <div class="row">
+                <div class="col-lg-5 col-md-5 col-6">
+                <div class="header-left d-flex align-items-center">
+                    <div class="menu-toggle-btn mr-15">
+                    <button id="menu-toggle" class="main-btn primary-btn btn-hover">
+                        <i class="lni lni-chevron-left me-2"></i> Menu
+                    </button>
+                    </div>
+                    <div class="header-search d-none d-md-flex">
+                    <form action="#">
+                        <input type="text" placeholder="Search..." />
+                        <button><i class="lni lni-search-alt"></i></button>
+                    </form>
+                    </div>
+                </div>
+                </div>
+                <div class="col-lg-7 col-md-7 col-6">
+                <div class="header-right">
+                   
+                    <!-- profile start -->
+                    <div class="profile-box ml-15">
+                    <a class="btn btn-primary" href="/">public view</a>
+                    <button class="dropdown-toggle bg-transparent border-0" type="button" id="profile"
+                        data-bs-toggle="dropdown" aria-expanded="false">
+                        <div class="profile-info">
+                        <div class="info">
+                            <div>
+                            <p>Admin</p>
+                            </div>
+                        </div>
+                        </div>
+                    </button>
+                    <ul class="dropdown-menu dropdown-menu-end" aria-labelledby="profile">
+                        <li>
+                        <a href="/user/logout"> <i class="lni lni-exit"></i> Sign Out </a>
+                        </li>
+                    </ul>
+                    </div>
+                    <!-- profile end -->
+                </div>
+                </div>
+            </div>
+            </div>
+               
+        </header>
+        <!-- ========== header end ========== -->
+
+            <div class="container-md">
+                <h4>{{block "page-title" .}}{{end}}</h4>
+                {{block "content" .}}
+                {{end}}
+            </div>
+        </main>
+        <!-- ======== main-wrapper end =========== -->
+         
+        <!-- ========= All Javascript files linkup ======== -->
+        <script src="/static/admin/assets/js/bootstrap.bundle.min.js"></script>
+        <script src="/static/admin/assets/js/moment.min.js"></script>
+        <script src="/static/admin/assets/js/polyfill.js"></script>
+        <script src="/static/admin/assets/js/main.js"></script>
+        {{block "js" . }}
+
+        {{end}}
+    </body>
+    </html>
+
+{{end}}

@@ -1,1 +1,17 @@
-this is admin dashboard
+{{template "admin" .}}
+
+{{define "page-title"}}
+    Dashboard
+{{end}}
+
+{{define "tab-title"}}
+    <title>Admin Dashboard</title>
+{{end}}
+
+{{define "content"}}
+    <div class="row">
+        <div class="col-md-12">
+            Dashboard content
+        </div>
+    </div>
+{{end}}
