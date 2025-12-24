@@ -44,7 +44,10 @@ func router(app *config.AppConfig) http.Handler {
 
 	mux.Route("/admin", func(mux chi.Router) {
 		mux.Use(Auth)
-		mux.Get("/dashboard", handlers.Repo.Dashboard)
+		mux.Get("/dashboard", handlers.Repo.AdminDashboard)
+		mux.Get("/ls-reservation-new", handlers.Repo.AdminListNewReservations)
+		mux.Get("/ls-reservation-all", handlers.Repo.AdminsListAllReservations)
+		mux.Get("/reservations-calendar", handlers.Repo.AdminReservationsCalendar)
 	})
 
 	// 404

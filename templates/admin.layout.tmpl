@@ -67,15 +67,15 @@
                 </a>
                 <ul id="ddmenu_2" class="collapse dropdown-nav">
                 <li>
-                    <a href="#"> New Reservation </a>
+                    <a href="/admin/ls-reservation-new"> New Reservation </a>
                 </li>
                 <li>
-                    <a href="#"> All Reservations </a>
+                    <a href="/admin/ls-reservation-all"> All Reservations </a>
                 </li>
                 </ul>
             </li>
             <li class="nav-item">
-                <a href="/admin/dashboard">
+                <a href="/admin/reservations-calendar">
                 <span class="icon">
                     <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-calendar-fill" viewBox="0 0 16 16">
   <path d="M3.5 0a.5.5 0 0 1 .5.5V1h8V.5a.5.5 0 0 1 1 0V1h1a2 2 0 0 1 2 2v11a2 2 0 0 1-2 2H2a2 2 0 0 1-2-2V5h16V4H0V3a2 2 0 0 1 2-2h1V.5a.5.5 0 0 1 .5-.5"/>
@@ -141,12 +141,9 @@
                
         </header>
         <!-- ========== header end ========== -->
-
-            <div class="container-md">
-                <h4>{{block "page-title" .}}{{end}}</h4>
-                {{block "content" .}}
-                {{end}}
-            </div>
+            {{block "content" .}}
+            {{end}}
+            
         </main>
         <!-- ======== main-wrapper end =========== -->
          

@@ -488,8 +488,32 @@ func (m *Repository) Logout(w http.ResponseWriter, r *http.Request) {
 	http.Redirect(w, r, "/user/login", http.StatusSeeOther)
 }
 
-func (m *Repository) Dashboard(w http.ResponseWriter, r *http.Request) {
+func (m *Repository) AdminDashboard(w http.ResponseWriter, r *http.Request) {
 	err := render.Template(w, r, "admin-dashboard.page.tmpl", &models.TemplateData{})
+	if err != nil {
+		http.Error(w, err.Error(), http.StatusNotFound)
+		return
+	}
+}
+
+func (m *Repository) AdminListNewReservations(w http.ResponseWriter, r *http.Request) {
+	err := render.Template(w, r, "admin-new-reservations.page.tmpl", &models.TemplateData{})
+	if err != nil {
+		http.Error(w, err.Error(), http.StatusNotFound)
+		return
+	}
+}
+
+func (m *Repository) AdminsListAllReservations(w http.ResponseWriter, r *http.Request) {
+	err := render.Template(w, r, "admin-all-reservations.page.tmpl", &models.TemplateData{})
+	if err != nil {
+		http.Error(w, err.Error(), http.StatusNotFound)
+		return
+	}
+}
+
+func (m *Repository) AdminReservationsCalendar(w http.ResponseWriter, r *http.Request) {
+	err := render.Template(w, r, "admin-reservations-calendar.page.tmpl", &models.TemplateData{})
 	if err != nil {
 		http.Error(w, err.Error(), http.StatusNotFound)
 		return
