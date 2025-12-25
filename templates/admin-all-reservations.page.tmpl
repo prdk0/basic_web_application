@@ -13,25 +13,26 @@
                 <table class="table table-striped table-hover" id="myTable">
                     <thead>
                         <tr>
-                            <th scope="col">ID</th>
+                            <th scope="col">#ID</th>
                             <th scope="col">First Name</th>
                             <th scope="col">Last Name</th>
-                            <th scope="col">Email</th>
+                            <th scope="col">Room Name</th>
                             <th scope="col">Start Date</th>
                             <th scope="col">End Date</th>
-                            <th scope="col">Room Name</th>
+                            
                         </tr>
                     </thead>
                     <tbody>
                         {{range $res}}
                             <tr>
                                 <td>{{.ID}}</td>
-                                <td>{{.FirstName}}</td>
+                                <td>
+                                    <a href="/admin/reservations/all/{{.ID}}">{{.FirstName}}</a>
+                                </td>
                                 <td>{{.LastName}}</td>
-                                <td>{{.Email}}</td>
-                                <td>{{.StartDate}}</td>
-                                <td>{{.EndDate}}</td>
                                 <td>{{.Room.RoomName}}</td>
+                                <td>{{humanDate .StartDate}}</td>
+                                <td>{{humanDate .EndDate}}</td>
                             </tr>
                         {{end}}
                     </tbody>
@@ -49,10 +50,13 @@
 {{define "js"}}
     <script src="https://cdn.jsdelivr.net/npm/simple-datatables@latest" type="text/javascript"></script>
     <script>
-        // Initialize the data table
-        const dataTable = new simpleDatatables.DataTable("#myTable", {
-            searchable: true,
-            pagination: true,
+        document.addEventListener("DOMContentLoaded", function ()  {
+            const dataTable = new simpleDatatables.DataTable("#myTable", {
+                searchable: true,
+                pagination: true,
+                select: 3, sort: "desc"
+            });
         });
+        
     </script>
 {{end}}
