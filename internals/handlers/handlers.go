@@ -558,6 +558,65 @@ func (m *Repository) AdminShowReservation(w http.ResponseWriter, r *http.Request
 	}
 }
 
+func (m *Repository) AdminPostShowReservation(w http.ResponseWriter, r *http.Request) {
+	explode := strings.Split(r.RequestURI, "/")
+	id, err := strconv.Atoi(explode[4])
+	if err != nil {
+		helpers.ServerError(w, err)
+	}
+	src := explode[3]
+	stringMap := make(map[string]string)
+	stringMap["src"] = src
+	res, err := m.DB.GetReservationById(id)
+	if err != nil {
+		helpers.ServerError(w, err)
+	}
+
+	err = r.ParseForm()
+	if err != nil {
+		log.Println(err)
+	}
+	first_name := r.Form.Get("first_name")
+	last_name := r.Form.Get("last_name")
+	email := r.Form.Get("email")
+	phone := r.Form.Get("phone")
+
+	res.FirstName = first_name
+	res.LastName = last_name
+	res.Email = email
+	res.Phone = phone
+
+	form := forms.New(r.PostForm)
+
+	form.Required("first_name", "last_name", "email", "phone")
+	form.MinLength("first_name", 3)
+	form.IsValidEmail("email")
+
+	if !form.Valid() {
+		data := make(map[string]any)
+		data["reservation"] = res
+		if m.App.Env.Test {
+			http.Error(w, "Invalid input format", http.StatusSeeOther)
+		}
+
+		render.Template(w, r, "", &models.TemplateData{
+			Form: form,
+			Data: data,
+		})
+		return
+	}
+
+	err = m.DB.UpdateReservationById(res)
+	if err != nil {
+		helpers.ServerError(w, err)
+	}
+
+	m.App.Session.Put(r.Context(), "flash", "successfully updated")
+	redirectUrl := fmt.Sprintf("/admin/ls-reservation-%s", src)
+	http.Redirect(w, r, redirectUrl, http.StatusSeeOther)
+
+}
+
 func (m *Repository) AdminReservationsCalendar(w http.ResponseWriter, r *http.Request) {
 	err := render.Template(w, r, "admin-reservations-calendar.page.tmpl", &models.TemplateData{})
 	if err != nil {

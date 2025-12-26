@@ -10,3 +10,6 @@ go test -coverprofile=coverage.out && go tool cover -html=coverage.out
 database migration tool - soda 
 --------------------------------
 https://gobuffalo.io/documentation/database/soda/
+
+
+https://stackoverflow.com/questions/70516345/how-to-get-url-param-in-middleware-go-chi

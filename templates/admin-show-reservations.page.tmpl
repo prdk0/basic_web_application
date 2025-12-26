@@ -48,7 +48,7 @@
                         {{end}}
                         <input type="text" name="phone" value="{{$res.Phone}}" class="form-control {{with .Form.Errors.Get "phone"}}is-invalid{{end}}" id="phone" autocomplete="new-password" required>
                     </div>
-                    <button type="submit" class="btn btn-primary">Make Reservation</button>
+                    <button type="submit" class="btn btn-primary">Save</button>
                     <a class="btn btn-danger" href="/admin/ls-reservation-{{$src}}">Cancel</a>
                 </form>
             </div>

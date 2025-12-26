@@ -3,8 +3,14 @@ package main
 import (
 	"bookings/internals/helpers"
 	"net/http"
+	"regexp"
 
 	"github.com/justinas/nosurf"
+)
+
+var (
+	srcRegex = regexp.MustCompile("^(new|all)$") // 'src' must be 'new', 'all'
+	idRegex  = regexp.MustCompile("^[0-9]+$")    // 'id' must be numeric
 )
 
 // NoSurf add CSRF protection to all post requests
