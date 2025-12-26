@@ -48,6 +48,8 @@ func router(app *config.AppConfig) http.Handler {
 		mux.Get("/ls-reservation-new", handlers.Repo.AdminsListNewReservations)
 		mux.Get("/ls-reservation-all", handlers.Repo.AdminsListAllReservations)
 		mux.Get("/reservations-calendar", handlers.Repo.AdminReservationsCalendar)
+		mux.Get("/reservations/all/{id}", handlers.Repo.AdminShowReservation)
+		mux.Get("/reservations/new/{id}", handlers.Repo.AdminShowReservation)
 	})
 
 	// 404

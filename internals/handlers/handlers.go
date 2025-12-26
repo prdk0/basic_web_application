@@ -517,8 +517,6 @@ func (m *Repository) AdminsListAllReservations(w http.ResponseWriter, r *http.Re
 func (m *Repository) AdminsListNewReservations(w http.ResponseWriter, r *http.Request) {
 
 	reservations, err := m.DB.AllNewReservations()
-
-	log.Println(len(reservations))
 	if err != nil {
 		helpers.ServerError(w, err)
 	}
@@ -527,6 +525,32 @@ func (m *Repository) AdminsListNewReservations(w http.ResponseWriter, r *http.Re
 
 	err = render.Template(w, r, "admin-new-reservations.page.tmpl", &models.TemplateData{
 		Data: data,
+	})
+	if err != nil {
+		http.Error(w, err.Error(), http.StatusNotFound)
+		return
+	}
+}
+
+func (m *Repository) AdminShowReservation(w http.ResponseWriter, r *http.Request) {
+	explode := strings.Split(r.RequestURI, "/")
+	id, err := strconv.Atoi(explode[4])
+	if err != nil {
+		helpers.ServerError(w, err)
+	}
+	src := explode[3]
+	stringMap := make(map[string]string)
+	stringMap["src"] = src
+	res, err := m.DB.GetReservationById(id)
+	if err != nil {
+		helpers.ServerError(w, err)
+	}
+	data := make(map[string]any)
+	data["reservation"] = res
+	err = render.Template(w, r, "admin-show-reservations.page.tmpl", &models.TemplateData{
+		Form:      forms.New(nil),
+		Data:      data,
+		StringMap: stringMap,
 	})
 	if err != nil {
 		http.Error(w, err.Error(), http.StatusNotFound)
