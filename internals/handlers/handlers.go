@@ -590,6 +590,7 @@ func (m *Repository) AdminPostShowReservation(w http.ResponseWriter, r *http.Req
 
 	form.Required("first_name", "last_name", "email", "phone")
 	form.MinLength("first_name", 3)
+	form.MinLength("last_name", 3)
 	form.IsValidEmail("email")
 
 	if !form.Valid() {
@@ -598,10 +599,10 @@ func (m *Repository) AdminPostShowReservation(w http.ResponseWriter, r *http.Req
 		if m.App.Env.Test {
 			http.Error(w, "Invalid input format", http.StatusSeeOther)
 		}
-
-		render.Template(w, r, "", &models.TemplateData{
-			Form: form,
-			Data: data,
+		render.Template(w, r, "admin-show-reservations.page.tmpl", &models.TemplateData{
+			Form:      form,
+			Data:      data,
+			StringMap: stringMap,
 		})
 		return
 	}
