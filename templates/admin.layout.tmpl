@@ -10,9 +10,18 @@
         <link rel="stylesheet" href="/static/admin/assets/css/bootstrap.min.css" />
         <link rel="stylesheet" href="/static/admin/assets/css/lineicons.css" rel="stylesheet" type="text/css" />
         <link rel="stylesheet" href="/static/admin/assets/css/materialdesignicons.min.css" rel="stylesheet" type="text/css" />
+        <link rel="stylesheet" type="text/css" href="/static/css/notie.min.css">
         <link rel="stylesheet" href="/static/admin/assets/css/main.css" />
         {{block "tab-title" .}}
         {{end}}
+        <style>
+            label {
+                font-weight: bold
+            }
+            .notie-container {
+                z-index: 50000
+            }
+        </style>
         {{block "css" . }}
 
         {{end}}
@@ -145,7 +154,43 @@
         <script src="/static/admin/assets/js/bootstrap.bundle.min.js"></script>
         <script src="/static/admin/assets/js/moment.min.js"></script>
         <script src="/static/admin/assets/js/polyfill.js"></script>
+        <script src="/static/js/sweetalert2@11.js"></script>
+        <script src="/static/js/notie.min.js"></script>
+        <script src="/static/js/app.js"></script>
         <script src="/static/admin/assets/js/main.js"></script>
+        <script type="text/javascript">
+            let alertPrompt = Prompt();
+            function notify(msg, type) {
+                let config = {
+                    type:type,
+                    text:msg
+                }
+                notie.alert(config)
+                }
+
+                // Sweet Alert
+
+                function notifyModal() {
+                Swal.fire({
+                    title: 'Error!',
+                    text: 'Do you want to continue',
+                    icon: 'error',
+                    confirmButtonText: 'Cool'
+                    })
+                }
+
+                {{with .Error}}
+                    notify("{{.}}", "error")
+                {{end}}
+
+                {{with .Flash}}
+                    notify("{{.}}", "success")
+                {{end}}
+
+                {{with .Warning}}
+                    notify("{{.}}", "warning")
+                {{end}}
+            </script>
         {{block "js" . }}
 
         {{end}}

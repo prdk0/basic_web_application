@@ -49,9 +49,27 @@
                         <input type="text" name="phone" value="{{$res.Phone}}" class="form-control {{with .Form.Errors.Get "phone"}}is-invalid{{end}}" id="phone" autocomplete="new-password" required>
                     </div>
                     <button type="submit" class="btn btn-primary">Save</button>
-                    <a class="btn btn-danger" href="/admin/ls-reservation-{{$src}}">Cancel</a>
+                    <a class="btn btn-warning" href="/admin/ls-reservation-{{$src}}">Cancel</a>
+                    <a href="#!" class="btn btn-info" onclick="processRes({{$res.ID}})">Mark as Processed</a>
                 </form>
             </div>
         </div>
     </div>
+{{end}}
+
+{{define "js"}}
+{{$src := index .StringMap "src"}}
+    <script>
+        function processRes(id) {
+            alertPrompt.custom({
+                icon: "warning",
+                msg: "Are you sure ?",
+                callback: function(result) {
+                    if (result != false) {
+                        window.location.href = "/admin/process-reservation/{{$src}}/"+id
+                    }
+                }
+            })
+        }
+    </script>
 {{end}}

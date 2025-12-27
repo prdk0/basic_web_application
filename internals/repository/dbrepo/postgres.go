@@ -306,3 +306,27 @@ func (m *postgreDbRepo) UpdateReservationById(r models.Reservation) error {
 	}
 	return nil
 }
+
+func (m *postgreDbRepo) DeleteReservation(id int) error {
+	ctx, cancel := context.WithTimeout(context.Background(), 3*time.Second)
+	defer cancel()
+	query := "delete from reservations where id = $1"
+
+	_, err := m.DB.ExecContext(ctx, query, id)
+	if err != nil {
+		return err
+	}
+	return nil
+}
+
+func (m *postgreDbRepo) UpdateProcessedForReservation(id, processed int) error {
+	ctx, cancel := context.WithTimeout(context.Background(), 3*time.Second)
+	defer cancel()
+	query := "update reservations set processed = $1 where id = $2"
+
+	_, err := m.DB.ExecContext(ctx, query, processed, id)
+	if err != nil {
+		return err
+	}
+	return nil
+}

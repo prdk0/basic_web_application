@@ -43,10 +43,11 @@ func router(app *config.AppConfig) http.Handler {
 	mux.Get("/user/logout", handlers.Repo.Logout)
 
 	mux.Route("/admin", func(mux chi.Router) {
-		// mux.Use(Auth)
+		mux.Use(Auth)
 		mux.Get("/dashboard", handlers.Repo.AdminDashboard)
 		mux.Get("/ls-reservation-new", handlers.Repo.AdminsListNewReservations)
 		mux.Get("/ls-reservation-all", handlers.Repo.AdminsListAllReservations)
+		mux.Get("/process-reservation/{src}/{id}", handlers.Repo.AdminProcessReservation)
 		mux.Get("/reservations-calendar", handlers.Repo.AdminReservationsCalendar)
 
 		mux.Get("/reservations/{src}/{id}", handlers.Repo.AdminShowReservation)
