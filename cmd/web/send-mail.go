@@ -6,9 +6,9 @@ import (
 	"log"
 	"os"
 	"strings"
-	"time"
 
-	mail "github.com/xhit/go-simple-mail/v2"
+	"github.com/joho/godotenv"
+	"gopkg.in/gomail.v2"
 )
 
 func listenForMail() {
@@ -21,20 +21,18 @@ func listenForMail() {
 }
 
 func sendMessage(m models.MailData) {
-	server := mail.NewSMTPClient()
-	server.Host = "localhost"
-	server.Port = 1025
-	server.KeepAlive = false
-	server.ConnectTimeout = 10 * time.Second
-	client, err := server.Connect()
+	err := godotenv.Load()
 	if err != nil {
-		errorLog.Println(err)
+		log.Fatal("Error loading .env file")
 	}
-
-	email := mail.NewMSG()
-	email.SetFrom(m.From).AddTo(m.To).SetSubject(m.Subject)
+	mail_username := os.Getenv("MAIL_USERNAME")
+	mail_password := os.Getenv("MAIL_PASSWORD")
+	ml := gomail.NewMessage()
+	ml.SetHeader("From", m.From)
+	ml.SetHeader("To", m.To)
+	ml.SetHeader("Subject", m.Subject)
 	if m.Template == "" {
-		email.SetBody(mail.TextHTML, m.Content)
+		ml.SetBody("text/html", m.Content)
 	} else {
 		data, err := os.ReadFile(fmt.Sprintf("./templates/email-template/%s", m.Template))
 		if err != nil {
@@ -42,13 +40,10 @@ func sendMessage(m models.MailData) {
 		}
 		mailTemplate := string(data)
 		msgToSend := strings.Replace(mailTemplate, "[%body%]", m.Content, 1)
-		email.SetBody(mail.TextHTML, msgToSend)
+		ml.SetBody("text/html", msgToSend)
 	}
-
-	err = email.Send(client)
-	if err != nil {
-		log.Println(err)
-	} else {
-		log.Println("Email send")
+	d := gomail.NewDialer("smtp.gmail.com", 587, mail_username, mail_password)
+	if err := d.DialAndSend(ml); err != nil {
+		panic(err)
 	}
 }
