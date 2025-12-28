@@ -637,6 +637,22 @@ func (m *Repository) AdminProcessReservation(w http.ResponseWriter, r *http.Requ
 	http.Redirect(w, r, fmt.Sprintf("/admin/ls-reservation-%s", src), http.StatusSeeOther)
 }
 
+func (m *Repository) AdminDeleteReservation(w http.ResponseWriter, r *http.Request) {
+	src := chi.URLParam(r, "src")
+	id, err := strconv.Atoi(chi.URLParam(r, "id"))
+	if err != nil {
+		helpers.ServerError(w, err)
+	}
+	err = m.DB.DeleteReservation(id)
+
+	if err != nil {
+		helpers.ServerError(w, err)
+	}
+
+	m.App.Session.Put(r.Context(), "flash", "Deleted")
+	http.Redirect(w, r, fmt.Sprintf("/admin/ls-reservation-%s", src), http.StatusSeeOther)
+}
+
 func (m *Repository) AdminReservationsCalendar(w http.ResponseWriter, r *http.Request) {
 	err := render.Template(w, r, "admin-reservations-calendar.page.tmpl", &models.TemplateData{})
 	if err != nil {
