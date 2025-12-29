@@ -9,6 +9,7 @@ import (
 	"bookings/internals/render"
 	"bookings/internals/repository"
 	"bookings/internals/repository/dbrepo"
+	"database/sql"
 	"encoding/json"
 	"fmt"
 	"log"
@@ -323,7 +324,7 @@ func (m *Repository) PostReservation(w http.ResponseWriter, r *http.Request) {
 
 	restriction_selected_value := r.FormValue("restrictions")
 
-	selected_value, err := strconv.Atoi(restriction_selected_value)
+	selected_restriction_value, err := strconv.Atoi(restriction_selected_value)
 
 	if err != nil {
 		m.App.Session.Put(r.Context(), "error", "error in selected value")
@@ -335,12 +336,16 @@ func (m *Repository) PostReservation(w http.ResponseWriter, r *http.Request) {
 		StartDate:     reservation.StartDate,
 		EndDate:       reservation.EndDate,
 		RoomID:        reservation.RoomID,
-		ReservationID: newReservationId,
-		RestrictionID: selected_value,
+		RestrictionID: selected_restriction_value,
+		ReservationID: sql.NullInt32{Int32: 0, Valid: false},
 	}
 
+	if selected_restriction_value == 1 {
+		restriction.ReservationID = sql.NullInt32{Int32: int32(newReservationId), Valid: true}
+	}
 	err = m.DB.InsertRoomRestriction(restriction)
 	if err != nil {
+		log.Println(err)
 		m.App.Session.Put(r.Context(), "error", "can't insert room restrictions")
 		http.Redirect(w, r, "/", http.StatusTemporaryRedirect)
 		return

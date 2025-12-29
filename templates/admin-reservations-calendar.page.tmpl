@@ -26,19 +26,19 @@
                 <div class="mb-3">
                     {{range $rooms}}
                         {{$roomId := .ID}}
-                        <h4>{{.RoomName}}</h4>
+                        <h4 class="mb-3">{{.RoomName}}</h4>
                         <div class="table-responsive">
                             <table class="table table-bordered table-sm">
                                 <tr class="table-light">
                                     {{range $index := iterate $dim}}
-                                        <td class="text-center w-auto">
+                                        <td class="text-center" style="width: 150px;">
                                             {{add $index 1}}
                                         </td>
                                     {{end}}
                                 </tr>
                                 <tr>
                                     {{range iterate $dim}}
-                                        <td class="text-center w-auto">
+                                        <td class="text-center" style="width: 150px;">
                                             <input type="checkbox">
                                         </td>
                                     {{end}}
