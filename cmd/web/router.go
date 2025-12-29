@@ -36,14 +36,18 @@ func router(app *config.AppConfig) http.Handler {
 
 	// login
 	mux.Route("/user", func(mux chi.Router) {
-		// mux.Use(redirectIfAuthenticated)
+		if app.InProduction {
+			mux.Use(redirectIfAuthenticated)
+		}
 		mux.Get("/login", handlers.Repo.ShowLogin)
 		mux.Post("/login", handlers.Repo.PostShowLogin)
 	})
 	mux.Get("/user/logout", handlers.Repo.Logout)
 
 	mux.Route("/admin", func(mux chi.Router) {
-		mux.Use(Auth)
+		if app.InProduction {
+			mux.Use(Auth)
+		}
 		mux.Get("/dashboard", handlers.Repo.AdminDashboard)
 		mux.Get("/ls-reservation-new", handlers.Repo.AdminsListNewReservations)
 		mux.Get("/ls-reservation-all", handlers.Repo.AdminsListAllReservations)
