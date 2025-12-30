@@ -19,6 +19,7 @@ import (
 	"time"
 
 	"github.com/go-chi/chi/v5"
+	"golang.org/x/crypto/bcrypt"
 )
 
 var Repo *Repository
@@ -719,6 +720,65 @@ func (m *Repository) AdminReservationsCalendar(w http.ResponseWriter, r *http.Re
 		http.Error(w, err.Error(), http.StatusNotFound)
 		return
 	}
+}
+
+func (m *Repository) CreateUser(w http.ResponseWriter, r *http.Request) {
+	err := render.Template(w, r, "new-user.page.tmpl", &models.TemplateData{
+		Form: forms.New(nil),
+	})
+	if err != nil {
+		log.Fatal(err)
+		http.Error(w, err.Error(), http.StatusNotFound)
+		return
+	}
+}
+
+func (m *Repository) PostCreateUser(w http.ResponseWriter, r *http.Request) {
+	err := r.ParseForm()
+	if err != nil {
+		m.App.Session.Put(r.Context(), "error", "can't parse the form")
+		http.Redirect(w, r, "/", http.StatusTemporaryRedirect)
+		return
+	}
+
+	user := models.User{}
+	user.FirstName = r.Form.Get("first_name")
+	user.LastName = r.Form.Get("last_name")
+	user.Email = r.Form.Get("email")
+	access_level, _ := strconv.Atoi(r.Form.Get("access_level"))
+	user.AccessLevel = access_level
+	user.Password = r.Form.Get("password")
+
+	form := forms.New(r.PostForm)
+	form.Required("first_name", "last_name", "email", "password")
+	form.IsValidEmail("email")
+	form.MinLength("first_name", 3)
+	form.MinLength("last_name", 3)
+
+	if !form.Valid() {
+		data := make(map[string]any)
+		data["user"] = user
+		if m.App.Env.Test {
+			http.Error(w, "Invalid input format", http.StatusSeeOther)
+		}
+
+		render.Template(w, r, "new-user.page.tmpl", &templateData{
+			Form: form,
+			Data: data,
+		})
+		return
+	}
+
+	hashedPassword, _ := bcrypt.GenerateFromPassword([]byte(user.Password), 12)
+	user.Password = string(hashedPassword)
+	err = m.DB.CreateUser(user)
+	if err != nil {
+		m.App.Session.Put(r.Context(), "error", "can't insert user in to database")
+		http.Redirect(w, r, "/", http.StatusTemporaryRedirect)
+		return
+	}
+	m.App.Session.Put(r.Context(), "flash", "user created successfully")
+	http.Redirect(w, r, "/", http.StatusSeeOther)
 }
 
 func (m *Repository) PageNotFound(w http.ResponseWriter, r *http.Request) {

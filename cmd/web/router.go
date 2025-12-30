@@ -44,6 +44,9 @@ func router(app *config.AppConfig) http.Handler {
 	})
 	mux.Get("/user/logout", handlers.Repo.Logout)
 
+	mux.Get("/user/new", handlers.Repo.CreateUser)
+	mux.Post("/user/new", handlers.Repo.PostCreateUser)
+
 	mux.Route("/admin", func(mux chi.Router) {
 		if app.InProduction {
 			mux.Use(Auth)

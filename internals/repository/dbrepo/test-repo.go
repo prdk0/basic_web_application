@@ -118,3 +118,7 @@ func (m *testDBRepo) AllRooms() ([]models.Room, error) {
 
 	return rooms, nil
 }
+
+func (m *testDBRepo) CreateUser(u models.User) error {
+	return nil
+}

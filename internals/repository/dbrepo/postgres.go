@@ -367,3 +367,18 @@ func (m *postgreDbRepo) AllRooms() ([]models.Room, error) {
 
 	return rooms, nil
 }
+
+func (m *postgreDbRepo) CreateUser(u models.User) error {
+	ctx, cancel := context.WithTimeout(context.Background(), 3*time.Second)
+	defer cancel()
+
+	stmt := `insert into users(first_name, last_name, email, password, access_level, created_at, updated_at) values($1, $2, $3, $4, $5, $6, $7)`
+
+	_, err := m.DB.ExecContext(ctx, stmt, u.FirstName, u.LastName, u.Email, u.Password, u.AccessLevel, time.Now(), time.Now())
+
+	if err != nil {
+		return err
+	}
+
+	return nil
+}

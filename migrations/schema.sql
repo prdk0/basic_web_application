@@ -2,7 +2,7 @@
 -- PostgreSQL database dump
 --
 
-\restrict LrCA5XwrOoG1bAzvD6e9RtdcufReE1y50FuVT6flXwRPDEM3NPNekckWiyWVdJK
+\restrict x0trP0di4rrlaTDeVgC2jBn8uAASoFKEhV49vEfRxO7fwUXB6KSEdDE1BlndoBN
 
 -- Dumped from database version 18.1
 -- Dumped by pg_dump version 18.1
@@ -397,5 +397,5 @@ ALTER TABLE ONLY public.room_restrictions
 -- PostgreSQL database dump complete
 --
 
-\unrestrict LrCA5XwrOoG1bAzvD6e9RtdcufReE1y50FuVT6flXwRPDEM3NPNekckWiyWVdJK
+\unrestrict x0trP0di4rrlaTDeVgC2jBn8uAASoFKEhV49vEfRxO7fwUXB6KSEdDE1BlndoBN
 
