@@ -382,3 +382,41 @@ func (m *postgreDbRepo) CreateUser(u models.User) error {
 
 	return nil
 }
+
+func (m *postgreDbRepo) GetRestrictionforRoomByDate(roomId int, start, end time.Time) ([]models.RoomRestriction, error) {
+	ctx, cancel := context.WithTimeout(context.Background(), 3*time.Second)
+	defer cancel()
+
+	var restrictions []models.RoomRestriction
+
+	query := `
+		select id, reservation_id, restriction_id, room_id, start_date, end_date
+		from room_restrictions where $1 < end_date and $2 >= start_date
+		and room_id = $3 
+	`
+
+	rows, err := m.DB.QueryContext(ctx, query, start, end, roomId)
+	if err != nil {
+		return restrictions, err
+	}
+
+	defer rows.Close()
+
+	for rows.Next() {
+		var r models.RoomRestriction
+		err := rows.Scan(
+			&r.ID,
+			&r.ReservationID,
+			&r.RestrictionID,
+			&r.RoomID,
+			&r.StartDate,
+			&r.EndDate,
+		)
+		if err != nil {
+			return restrictions, err
+		}
+		restrictions = append(restrictions, r)
+	}
+
+	return restrictions, nil
+}
