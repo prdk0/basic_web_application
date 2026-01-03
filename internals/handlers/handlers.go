@@ -814,6 +814,10 @@ func (m *Repository) PostCreateUser(w http.ResponseWriter, r *http.Request) {
 	http.Redirect(w, r, "/", http.StatusSeeOther)
 }
 
+func (m *Repository) AdminPostReservationsCalendar(w http.ResponseWriter, r *http.Request) {
+	log.Println("works")
+}
+
 func (m *Repository) PageNotFound(w http.ResponseWriter, r *http.Request) {
 	err := render.Template(w, r, "404.page.tmpl", &models.TemplateData{})
 	if err != nil {
