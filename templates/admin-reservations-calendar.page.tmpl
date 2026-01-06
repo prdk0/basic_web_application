@@ -5,12 +5,15 @@
 {{end}}
 
 {{define "content"}}
+    {{$now := index .Data "now"}}
+    {{$rooms := index .Data "rooms"}}
+    {{$dim := index .IntMap "days_in_month"}}
     <div class="container-md">
         <div class="row">
             <div class="col">
                 <h2>Admin Reservation Calendar</h2>
                 <div class="text-center mb-3">  
-                    <h3>{{index .StringMap "this_month"}}&#47;{{index .StringMap "this_month_year"}}</h3>
+                    <h3>{{formatDate $now "January"}}&nbsp;&nbsp;{{formatDate $now "2006"}}</h3>
                     <div class="d-flex justify-content-between align-items-center border-bottom p-2 mb-3">
                     <div class="left-element">
                         <a class="btn btn-sm btn-outline-secondary" href="/admin/reservations-calendar?y={{index .StringMap "last_month_year"}}&m={{index .StringMap "last_month"}}"><strong>⇚</strong></a>
@@ -19,6 +22,29 @@
                         <a class="btn btn-sm btn-outline-secondary" href="/admin/reservations-calendar?y={{index .StringMap "next_month_year"}}&m={{index .StringMap "next_month"}}"><strong>⇛</strong></a>
                     </div>
                 </div>
+                </div>
+                <div class="mb-3">
+                    {{range $rooms}}
+                        <h4 class="mb-3">{{.RoomName}}</h4>
+                        <div class="table-responsive">
+                            <table class="table table-bordered table-sm">
+                                <tr class="table-light">
+                                    {{range $index := iterate $dim}}
+                                        <td class="text-center" style="width: 150px;">
+                                            {{add $index 1}}
+                                        </td>
+                                    {{end}}
+                                </tr>
+                                    {{range $index := iterate $dim}}
+                                        <td class="text-center" style="width: 150px;">
+                                            <input type="checkbox">
+                                        </td>
+                                    {{end}}
+                                <tr>
+                                </tr>
+                            </table>
+                        </div>    
+                    {{end}}
                 </div>
             </div>
         </div>                
