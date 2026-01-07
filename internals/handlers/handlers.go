@@ -9,6 +9,7 @@ import (
 	"bookings/internals/render"
 	"bookings/internals/repository"
 	"bookings/internals/repository/dbrepo"
+	"database/sql"
 	"encoding/json"
 	"fmt"
 	"log"
@@ -323,7 +324,7 @@ func (m *Repository) PostReservation(w http.ResponseWriter, r *http.Request) {
 
 	restriction_selected_value := r.FormValue("restrictions")
 
-	selected_value, err := strconv.Atoi(restriction_selected_value)
+	selected_restriction_value, err := strconv.Atoi(restriction_selected_value)
 
 	if err != nil {
 		m.App.Session.Put(r.Context(), "error", "error in selected value")
@@ -335,8 +336,12 @@ func (m *Repository) PostReservation(w http.ResponseWriter, r *http.Request) {
 		StartDate:     reservation.StartDate,
 		EndDate:       reservation.EndDate,
 		RoomID:        reservation.RoomID,
-		ReservationID: newReservationId,
-		RestrictionID: selected_value,
+		RestrictionID: selected_restriction_value,
+		ReservationID: sql.NullInt32{Int32: 0, Valid: false},
+	}
+
+	if selected_restriction_value == 1 {
+		restriction.ReservationID = sql.NullInt32{Int32: int32(newReservationId), Valid: true}
 	}
 
 	err = m.DB.InsertRoomRestriction(restriction)
@@ -719,14 +724,14 @@ func (m *Repository) AdminReservationsCalendar(w http.ResponseWriter, r *http.Re
 		}
 
 		for _, y := range restrictions {
-			if y.ReservationID > 0 {
+			if y.ReservationID.Valid {
 				// reservation
 				for d := y.StartDate; d.After(y.EndDate) == false; d = d.AddDate(0, 0, 1) {
-					reservationMap[d.Format("2006-01-2")] = y.ReservationID
+					reservationMap[d.Format("2006-01-2")] = int(y.ReservationID.Int32)
 				}
 			} else {
 				// block
-				blockMap[y.StartDate.Format("2006-01-2")] = y.RestrictionID
+				blockMap[y.StartDate.Format("2006-01-2")] = y.ID
 			}
 		}
 
