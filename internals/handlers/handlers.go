@@ -784,7 +784,11 @@ func (m *Repository) AdminPostReservationsCalendar(w http.ResponseWriter, r *htt
 			if val, ok := curMap[name]; ok {
 				if val > 0 {
 					if !form.Has(fmt.Sprintf("remove_block_%d_%s", x.ID, name)) {
-						log.Println("would delete back", value)
+						err := m.DB.DeleteBlockByID(value)
+						if err != nil {
+							helpers.ServerError(w, err)
+							return
+						}
 					}
 				}
 			}
@@ -799,8 +803,16 @@ func (m *Repository) AdminPostReservationsCalendar(w http.ResponseWriter, r *htt
 				helpers.ServerError(w, err)
 				return
 			}
-
-			log.Println("would insert block for room id", roomID, "for date", exploded[3])
+			t, err := time.Parse("2006-01-2", exploded[3])
+			if err != nil {
+				helpers.ServerError(w, err)
+				return
+			}
+			err = m.DB.InsertBlockForRoom(roomID, t)
+			if err != nil {
+				helpers.ServerError(w, err)
+				return
+			}
 		}
 	}
 
