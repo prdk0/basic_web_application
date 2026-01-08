@@ -132,3 +132,8 @@ func (m *testDBRepo) InsertBlockForRoom(id int, startDate time.Time) error {
 func (m *testDBRepo) DeleteBlockByID(id int) error {
 	return nil
 }
+
+func (m *testDBRepo) GetRestrictionID(restrictionName string) (models.Restriction, error) {
+	var r models.Restriction
+	return r, nil
+}

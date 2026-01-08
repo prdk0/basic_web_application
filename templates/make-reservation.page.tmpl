@@ -25,41 +25,32 @@
                     <input type="hidden" name="room_id" value="{{$res.RoomID}}"/>
 
                     <div class="mb-3">
-                        <label for="restrictions" class="form-label">Restriction Category:</label>
-                        <select id="restrictions" name="restrictions" class="form-select">
-                            {{range $i, $v := $restri}}
-                                <option value={{$v.ID}}>{{$v.RestrictionName}}</option>
-	                        {{end}}
-                        </select>
-                    </div>
-
-                    <div class="mb-3">
                         <label for="first_name" class="form-label">First Name</label>
                         {{with .Form.Errors.Get "first_name"}}
                             <label class="text-danger">{{.}}</label>
                         {{end}}
-                        <input type="text" name="first_name" class="form-control {{with .Form.Errors.Get "first_name"}}is-invalid{{end}}" id="first_name" value="{{$res.FirstName}}" autocomplete="new-password" required>
+                        <input type="text" name="first_name" class="form-control {{with .Form.Errors.Get "first_name"}}is-invalid{{end}}" id="first_name" value="{{$res.FirstName}}" autocomplete="off" required>
                     </div>
                     <div class="mb-3">
                         <label for="last_name" class="form-label">Last Name</label>
                         {{with .Form.Errors.Get "last_name"}}
                             <label class="text-danger">{{.}}</label>
                         {{end}}
-                        <input type="text" name="last_name" value="{{$res.LastName}}" class="form-control {{with .Form.Errors.Get "last_name"}}is-invalid{{end}}" id="last_name" autocomplete="new-password" required>
+                        <input type="text" name="last_name" value="{{$res.LastName}}" class="form-control {{with .Form.Errors.Get "last_name"}}is-invalid{{end}}" id="last_name" autocomplete="off" required>
                     </div>
                     <div class="mb-3">
                         <label for="email" class="form-label">Email</label>
                         {{with .Form.Errors.Get "email"}}
                             <label class="text-danger">{{.}}</label>
                         {{end}}
-                        <input type="email" name="email" value="{{$res.Email}}" class="form-control {{with .Form.Errors.Get "email"}}is-invalid{{end}}" id="email" autocomplete="new-password" required>
+                        <input type="email" name="email" value="{{$res.Email}}" class="form-control {{with .Form.Errors.Get "email"}}is-invalid{{end}}" id="email" autocomplete="off" required>
                     </div>
                     <div class="mb-3">
                         <label for="phone" class="form-label">Phone</label>
                         {{with .Form.Errors.Get "phone"}}
                             <label class="text-danger">{{.}}</label>
                         {{end}}
-                        <input type="text" name="phone" value="{{$res.Phone}}" class="form-control {{with .Form.Errors.Get "phone"}}is-invalid{{end}}" id="phone" autocomplete="new-password" required>
+                        <input type="text" name="phone" value="{{$res.Phone}}" class="form-control {{with .Form.Errors.Get "phone"}}is-invalid{{end}}" id="phone" autocomplete="off" required>
                     </div>
                     <button type="submit" class="btn btn-primary">Make Reservation</button>
                 </form>

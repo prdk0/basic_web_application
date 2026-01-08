@@ -373,7 +373,7 @@ func (m *postgreDbRepo) GetRestrictionsForRoomByDate(roomID int, start, end time
 	defer cancel()
 	var restrictions []models.RoomRestriction
 
-	query := ` select id, reservation_id, restriction_id, room_id, start_date, end_date from room_restrictions where $1 < end_date and $2 >= start_date and room_id = $3`
+	query := ` select id, COALESCE(reservation_id, 0), restriction_id, room_id, start_date, end_date from room_restrictions where $1 < end_date and $2 >= start_date and room_id = $3`
 
 	rows, err := m.DB.QueryContext(ctx, query, start, end, roomID)
 	if err != nil {
@@ -426,4 +426,19 @@ func (m *postgreDbRepo) DeleteBlockByID(id int) error {
 		return err
 	}
 	return nil
+}
+
+func (m *postgreDbRepo) GetRestrictionID(restrictionName string) (models.Restriction, error) {
+	ctx, cancel := context.WithTimeout(context.Background(), 3*time.Second)
+	defer cancel()
+
+	var r models.Restriction
+	query := `select id from restrictions where restriction_name = $1`
+
+	row := m.DB.QueryRowContext(ctx, query, restrictionName)
+	err := row.Scan(&r.ID)
+	if err != nil {
+		return r, err
+	}
+	return r, nil
 }

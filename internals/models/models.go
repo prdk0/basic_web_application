@@ -1,7 +1,6 @@
 package models
 
 import (
-	"database/sql"
 	"time"
 )
 
@@ -50,7 +49,7 @@ type RoomRestriction struct {
 	StartDate     time.Time
 	EndDate       time.Time
 	RoomID        int
-	ReservationID sql.NullInt32
+	ReservationID int
 	RestrictionID int
 	Room          Room
 	Reservation   Reservation
