@@ -769,6 +769,41 @@ func (m *Repository) AdminPostReservationsCalendar(w http.ResponseWriter, r *htt
 		helpers.ServerError(w, err)
 		return
 	}
+
+	rooms, err := m.DB.AllRooms()
+	if err != nil {
+		helpers.ServerError(w, err)
+		return
+	}
+
+	form := forms.New(r.PostForm)
+
+	for _, x := range rooms {
+		curMap := m.App.Session.Get(r.Context(), fmt.Sprintf("block_map_%d", x.ID)).(map[string]int)
+		for name, value := range curMap {
+			if val, ok := curMap[name]; ok {
+				if val > 0 {
+					if !form.Has(fmt.Sprintf("remove_block_%d_%s", x.ID, name)) {
+						log.Println("would delete back", value)
+					}
+				}
+			}
+		}
+	}
+
+	for name, _ := range r.PostForm {
+		if strings.HasPrefix(name, "add_block") {
+			exploded := strings.Split(name, "_")
+			roomID, err := strconv.Atoi(exploded[2])
+			if err != nil {
+				helpers.ServerError(w, err)
+				return
+			}
+
+			log.Println("would insert block for room id", roomID, "for date", exploded[3])
+		}
+	}
+
 	m.App.Session.Put(r.Context(), "flash", "changes saved")
 	http.Redirect(w, r, fmt.Sprintf("/admin/reservations-calendar?y=%d&m=%d", year, month), http.StatusSeeOther)
 }
