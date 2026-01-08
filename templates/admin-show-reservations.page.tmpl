@@ -54,7 +54,9 @@
                     {{else}}
                         <a class="btn btn-warning" href="/admin/ls-reservation-{{$src}}">Cancel</a>
                     {{end}}
-                    <a href="#!" class="btn btn-info" onclick="processRes({{$res.ID}})">Mark as Processed</a>
+                    {{ if eq $res.Processed 0}}
+                        <a href="#!" class="btn btn-info" onclick="processRes({{$res.ID}})">Mark as Processed</a>
+                    {{end}}
                     <div class="d-flex justify-content-end">
                         <a href="#!" class="btn btn-danger" onclick="deleteRes({{$res.ID}})">Delete</a>
                     </div>
