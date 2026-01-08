@@ -27,6 +27,8 @@
                 </div>
                 </div>
                 <div class="mb-3">
+                <form method="post" action="/admin/reservations-calendar">
+                    <input type="hidden" name="csrf_token" value="{{ .CSRFToken }}">
                     {{range $rooms}}
                         {{$roomID := .ID}}
                         {{$blocks := index $.Data (printf "block_map_%d" .ID)}}
@@ -63,6 +65,11 @@
                             </table>
                         </div>    
                     {{end}}
+                    <hr/>
+                    <div class="mt-3">
+                        <input type="submit" class="btn btn-primary" value="Save Changes">
+                    </div>
+                </form>
                 </div>
             </div>
         </div>                

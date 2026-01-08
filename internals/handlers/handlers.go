@@ -751,6 +751,10 @@ func (m *Repository) AdminReservationsCalendar(w http.ResponseWriter, r *http.Re
 	}
 }
 
+func (m *Repository) AdminPostReservationsCalendar(w http.ResponseWriter, r *http.Request) {
+	log.Println("works")
+}
+
 func (m *Repository) PageNotFound(w http.ResponseWriter, r *http.Request) {
 	err := render.Template(w, r, "404.page.tmpl", &models.TemplateData{})
 	if err != nil {
