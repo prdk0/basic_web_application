@@ -752,7 +752,25 @@ func (m *Repository) AdminReservationsCalendar(w http.ResponseWriter, r *http.Re
 }
 
 func (m *Repository) AdminPostReservationsCalendar(w http.ResponseWriter, r *http.Request) {
-	log.Println("works")
+	err := r.ParseForm()
+	if err != nil {
+		helpers.ServerError(w, err)
+		return
+	}
+
+	year, err := strconv.Atoi(r.Form.Get("y"))
+	if err != nil {
+		helpers.ServerError(w, err)
+		return
+	}
+
+	month, err := strconv.Atoi(r.Form.Get("m"))
+	if err != nil {
+		helpers.ServerError(w, err)
+		return
+	}
+	m.App.Session.Put(r.Context(), "flash", "changes saved")
+	http.Redirect(w, r, fmt.Sprintf("/admin/reservations-calendar?y=%d&m=%d", year, month), http.StatusSeeOther)
 }
 
 func (m *Repository) PageNotFound(w http.ResponseWriter, r *http.Request) {
