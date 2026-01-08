@@ -321,12 +321,6 @@ func (m *Repository) PostReservation(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	if err != nil {
-		m.App.Session.Put(r.Context(), "error", "error in selected value")
-		http.Redirect(w, r, "/", http.StatusTemporaryRedirect)
-		return
-	}
-
 	res, err := m.DB.GetRestrictionID("Reservation")
 	if err != nil {
 		helpers.ServerError(w, err)
@@ -792,7 +786,7 @@ func (m *Repository) AdminPostReservationsCalendar(w http.ResponseWriter, r *htt
 		}
 	}
 
-	for name, _ := range r.PostForm {
+	for name := range r.PostForm {
 		if strings.HasPrefix(name, "add_block") {
 			exploded := strings.Split(name, "_")
 			roomID, err := strconv.Atoi(exploded[2])
